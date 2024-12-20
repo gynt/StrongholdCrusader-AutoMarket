@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{3e7906dd-28d1-4e95-b9d0-7288830cb1b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AutoMarket">
+      <UniqueIdentifier>{35a64074-22a0-4fd6-ba9a-dc0fb4abd2a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AutoMarket\UI">
+      <UniqueIdentifier>{e430cb4b-eb49-4ab0-af28-a347b872bfb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ASM">
+      <UniqueIdentifier>{48f3b8a4-decc-4f0e-b588-38e0f81bdc1e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Game\Resources.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Data.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="AutoMarket\AutoMarket.h">
+      <Filter>AutoMarket</Filter>
+    </ClInclude>
+    <ClInclude Include="AutoMarket\UI.h">
+      <Filter>AutoMarket</Filter>
+    </ClInclude>
+    <ClInclude Include="framework.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="Asm\Hooks.h">
+      <Filter>ASM</Filter>
+    </ClInclude>
+    <ClInclude Include="Asm\Writer.h">
+      <Filter>ASM</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="AutoMarket\UI\ResourceButton.h">
+      <Filter>AutoMarket\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="AutoMarket\UI\Utils.h">
+      <Filter>AutoMarket\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="AutoMarket\UI\EnableButton.h">
+      <Filter>AutoMarket\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="AutoMarket\UI\Button.h">
+      <Filter>AutoMarket\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="AutoMarket\UI\ResourceEdit.h">
+      <Filter>AutoMarket\UI</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AutoMarket\AutoMarket.cpp">
+      <Filter>AutoMarket</Filter>
+    </ClCompile>
+    <ClCompile Include="AutoMarket\UI.cpp">
+      <Filter>AutoMarket</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Asm\Hooks.cpp">
+      <Filter>ASM</Filter>
+    </ClCompile>
+    <ClCompile Include="AutoMarket\UI\ResourceButton.cpp">
+      <Filter>AutoMarket\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="AutoMarket\UI\Utils.cpp">
+      <Filter>AutoMarket\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="AutoMarket\UI\EnableButton.cpp">
+      <Filter>AutoMarket\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="AutoMarket\UI\Button.cpp">
+      <Filter>AutoMarket\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="AutoMarket\UI\ResourceEdit.cpp">
+      <Filter>AutoMarket\UI</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="CrusaderAutoMarket.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\background.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\items.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+</Project>
