@@ -139,6 +139,27 @@ int luaSetAddresses(lua_State* L) {
     return 0;
 }
 
+int luaGetAddresses(lua_State* L) {
+    lua_createtable(L, 0, 0);
+
+    lua_pushinteger(L, (DWORD) & EscapeCallback);
+    lua_setfield(L, -2, "EscapeCallback");
+
+    lua_pushinteger(L, (DWORD)&UpdateCallback);
+    lua_setfield(L, -2, "UpdateCallback"); // Triggered after game loop (not every simulated day, but every tick).
+
+    lua_pushinteger(L, (DWORD)&SetIngameStatusCallback);
+    lua_setfield(L, -2, "SetIngameStatusCallback"); // Triggered when starting or leaving a game.
+
+    lua_pushinteger(L, (DWORD)&MouseCallback);
+    lua_setfield(L, -2, "MouseCallback"); // Triggered on mouse input.
+
+    lua_pushinteger(L, (DWORD)&SystemKeyCallback);
+    lua_setfield(L, -2, "SystemKeyCallback");
+
+    return 1;
+}
+
 bool initialized = false;
 
 int luaInitialize(lua_State* L) {

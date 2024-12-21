@@ -48,10 +48,10 @@ static U1* const u1 = (U1*)0x00F98520;
 namespace Invoke
 {
 static auto SellResource     = (void(__stdcall*)(size_t player, size_t resource, size_t amount))0x004CBFA0;
-static auto const BuyResource      = (int(__stdcall*)(size_t player, size_t resource, size_t amount))0x004CC000;
-static auto const GetResourceCost  = (int(__thiscall*)(U0* self, size_t player, size_t resource, size_t amount))0x004588A0;
-static auto const GetResourceValue = (int(__thiscall*)(U0* self, size_t player, size_t resource, size_t amount))0x00458910;
-static auto const GetResourceSpace = (int(__thiscall*)(U1* self, size_t player, size_t resource))0x0040C1F0;
+static auto BuyResource      = (int(__stdcall*)(size_t player, size_t resource, size_t amount))0x004CC000;
+static auto GetResourceCost  = (int(__thiscall*)(U0* self, size_t player, size_t resource, size_t amount))0x004588A0;
+static auto GetResourceValue = (int(__thiscall*)(U0* self, size_t player, size_t resource, size_t amount))0x00458910;
+static auto GetResourceSpace = (int(__thiscall*)(U1* self, size_t player, size_t resource))0x0040C1F0;
 }
 
 }

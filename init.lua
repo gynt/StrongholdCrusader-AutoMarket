@@ -75,10 +75,41 @@ local function hook(from, len, f, to)
     -- }
 end
 
+local dll
+
+local addresses = {
+  Escape = { address = core.AOBScan("A1 ? ? ? ? 3B C5 74 C1"), size = 5, to = nil},
+  Update = { address = core.AOBScan("39 ? ? ? ? ? 74 15 FF D7"), size = 6, to = nil},
+  -- TODO: all of them
+  SetIngameStatus = {},
+  Mouse = {},
+  SystemKey = {},
+}
+
 return {
 
     enable = function(self, config)
-        core.writeCode()
+      dll = require('crusaderautomarket.dll')
+
+      dll.setAddresses({
+        SellResource = core.AOBScan("53 8B 5C 24 0C 56 8B 74 24 0C 57"),
+        BuyResource = core.AOBScan("53 8B 5C 24 10 55 8B 6C 24 10 56 8B 74 24 10"),
+        GetResourceCost = core.AOBScan("8B 44 24 08 8B 8C C1 1C 1F 05 00"),
+        GetResourceValue = core.AOBScan("8B 44 24 08 8B 8C C1 20 1F 05 00"),
+        GetResourceSpace = core.AOBScan("83 EC 0C 55 8B 6C 24 18 56"),
+      })
+      if dll.initialize() == false then
+        log(ERROR, 'could not initialize auto market dll')
+      end
+
+      -- Do hooks now here
+      local dllAddresses = dll.getAddresses()
+
+      hook(addresses.Escape.address, addresses.Escape.size, dllAddresses.EscapeCallback, addresses.Escape.to)
+      hook(addresses.Update.address, addresses.Update.size, dllAddresses.UpdateCallback, addresses.Update.to)
+      -- TODO: all of them
+
+      core.writeCode(core.AOBScan("0F ? ? ? ? ? 0F BF 86 E6 00 00 00"), {0x90, 0x90, 0x90, 0x90, 0x90, 0x90, })
     end,
 
     disable = function(self, config)
