@@ -10,18 +10,18 @@ AutoMarket::Manager g_market;
 
 void __cdecl UpdateCallback(ASM::HookRegisters)
 {
-    if (*Game::isIngame &&
-        !*Game::isPaused &&
+    if (Game::status->isIngame &&
+        !Game::status->isPaused &&
         *Game::playerIndex)
     {
-        size_t const time = *Game::ingameTime;
+        size_t const time = Game::status->ingameTime;
         g_market.Update(time);
     }
 }
 
 void __cdecl SystemKeyCallback(ASM::HookRegisters registers)
 {
-    if (*Game::altModifier)
+    if (Game::input->altModifier)
     {
         switch (registers.esi)
         {
@@ -67,17 +67,17 @@ void Initialize()
 {
     HANDLE const hProcess = GetCurrentProcess();
 
-    ASM::Hook((LPVOID)0x004B354D, 5, &EscapeCallback); // Triggered when hitting escape ingame.
-    ASM::Hook((LPVOID)0x0057C3B9, 6, &UpdateCallback); // Triggered after game loop (not every simulated day, but every tick).
-    ASM::Hook((LPVOID)0x00512438, 6, &SetIngameStatusCallback); // Triggered when starting or leaving a game.
-    ASM::Hook((LPVOID)0x00468030, 5, &MouseCallback); // Triggered on mouse input.
-    ASM::Hook((LPVOID)0x004B480B, 8, &SystemKeyCallback);
+    ASM::Hook((LPVOID)0x004B354D, 5, &EscapeCallback); // Triggered when hitting escape ingame. // 0x004B36BD
+    ASM::Hook((LPVOID)0x0057C3B9, 6, &UpdateCallback); // Triggered after game loop (not every simulated day, but every tick). // 0x0057C7E9
+    ASM::Hook((LPVOID)0x00512438, 6, &SetIngameStatusCallback); // Triggered when starting or leaving a game. // 0x005127B8
+    ASM::Hook((LPVOID)0x00468030, 5, &MouseCallback); // Triggered on mouse input. // 0x00468250
+    ASM::Hook((LPVOID)0x004B480B, 8, &SystemKeyCallback); // 0x004B497B
 
     // Don't disable the market the pop-up for the player.
     {
         SIZE_T lpNumberOfBytesWritten;
         char lpBuffer[] = { '\x90', '\x90', '\x90', '\x90', '\x90', '\x90' };
-        WriteProcessMemory(hProcess, (LPVOID)0x0040A07D, lpBuffer, sizeof(lpBuffer), &lpNumberOfBytesWritten);
+        WriteProcessMemory(hProcess, (LPVOID)0x0040A07D, lpBuffer, sizeof(lpBuffer), &lpNumberOfBytesWritten); // 0x0040A08D
     }
 
     g_market.Load();

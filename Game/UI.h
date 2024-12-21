@@ -6,6 +6,6 @@
 
 namespace Game::UI
 {
-static HWND const      hWindow   = *(HWND const*)0x00F983E4;
+static HWND const      hWindow   = *(HWND const*)0x00F983E4; // 0x00F98864
 static HINSTANCE const hInstance = (HINSTANCE)GetWindowLongPtr(hWindow, GWLP_HINSTANCE);
 }

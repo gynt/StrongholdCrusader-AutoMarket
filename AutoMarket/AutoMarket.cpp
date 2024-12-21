@@ -131,7 +131,7 @@ void Manager::Toggle()
 void Manager::SetEnabled(bool enabled)
 {
     m_enabled = enabled;
-    m_nextTime = *Game::ingameTime + m_interval;
+    m_nextTime = Game::status->ingameTime + m_interval;
 }
 
 void Manager::SetResourceEnabled(size_t resource, bool enabled)
