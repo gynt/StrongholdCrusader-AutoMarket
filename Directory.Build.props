@@ -40,6 +40,7 @@
     <PackageReference Include="zip" Version="0.2.0" PrivateAssets="all" developmentDependency="true" />
     <PackageReference Include="yaml-cpp" Version="0.7.0" PrivateAssets="all" developmentDependency="true" />
     <PackageReference Include="nlohmann.json" Version="3.11.2"  PrivateAssets="all" developmentDependency="true" />
+    <PackageReference Include="UnofficialCrusaderPatch3" />
 
   </ItemGroup>
   
