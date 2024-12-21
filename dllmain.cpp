@@ -67,6 +67,8 @@ void __cdecl MouseCallback(ASM::HookRegisters registers)
     }
 }
 
+std::string fileName = "ucp-automarket.json";
+
 void Initialize()
 {
     HANDLE const hProcess = GetCurrentProcess();
@@ -84,7 +86,7 @@ void Initialize()
         WriteProcessMemory(hProcess, (LPVOID)0x0040A07D, lpBuffer, sizeof(lpBuffer), &lpNumberOfBytesWritten);
     }
 
-    g_market.Load();
+    g_market.Load(fileName);
 }
 
 
@@ -109,6 +111,33 @@ bool setAddressForName(std::string const & name, DWORD const value) {
     }
 
     return false;
+}
+
+
+int luaSetConfig(lua_State* L) {
+    luaL_argcheck(L, lua_type(L, 1) == LUA_TTABLE, 1, "should be a table");
+    if (lua_gettop(L) != 1) return luaL_error(L, "there should be only one argument, %s given", lua_gettop(L));
+
+    lua_pushnil(L);
+    while (lua_next(L, 1) != 0) {
+        if (lua_type(L, -2) != LUA_TSTRING) {
+            return luaL_error(L, "keys must be strings, received a %s", lua_typename(L, lua_type(L, -2)));
+        }
+        std::string key = lua_tostring(L, -2);
+
+        if (key == "file") {
+            fileName = lua_tostring(L, -1);
+        }
+        else {
+            return luaL_error(L, "An error occurred while setting key: '%s' (unknown key?)", key.c_str());
+        }
+
+        /* removes 'value'; keeps 'key' for next iteration */
+        lua_pop(L, 1);
+    }
+
+    // Return nothing
+    return 0;
 }
 
 int luaSetAddresses(lua_State* L) {
@@ -160,6 +189,7 @@ int luaGetAddresses(lua_State* L) {
     return 1;
 }
 
+
 bool initialized = false;
 
 int luaInitialize(lua_State* L) {
@@ -182,6 +212,9 @@ int luaopen_crusaderautomarket(lua_State* L) {
     ucp_log(ucp_NamedVerbosity::Verbosity_1, "CrusaderAutoMarket.dll activated");
 
     lua_createtable(L, 0, 1);
+
+    lua_pushcfunction(L, luaSetConfig);
+    lua_setfield(L, -2, "setConfig");
 
     lua_pushcfunction(L, luaSetAddresses);
     lua_setfield(L, -2, "setAddresses");

@@ -15,6 +15,7 @@ using json = nlohmann::json;
 
 namespace AutoMarket
 {
+
 namespace Defaults
 {
     static constexpr bool   ResEnabled = true;
@@ -272,7 +273,8 @@ void Manager::Save()
     }
     j["Resources"] = std::move(resources);
 
-    std::ofstream f("automarket.json");
+    // TODO: remove this? currently file in game directory.
+    std::ofstream f("ucp-automarket.json");
     f << std::setw(3) << j << std::endl;
 }
 
@@ -289,11 +291,11 @@ static bool TryLoadJson(T& outValue, const json& j, char const* key, TDefault&& 
     return true;
 }
 
-void Manager::Load()
+void Manager::Load(const std::string & file)
 {
     json j;
     {
-        std::ifstream f("automarket.json");
+        std::ifstream f(file);
         f >> j;
     }
 

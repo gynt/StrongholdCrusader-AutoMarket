@@ -195,6 +195,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Directory.Build.props" />
+    <None Include="init.lua" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

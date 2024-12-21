@@ -3,6 +3,7 @@
 #include "Game/Resources.h"
 
 #include <stdint.h>
+#include <string>
 
 namespace AutoMarket
 {
@@ -40,7 +41,7 @@ public:
     size_t GetResourceMax(size_t resource) const;
 
     void   Save();
-    void   Load();
+    void   Load(const std::string& file);
 
 private:
     size_t CalcFee(size_t value) const;

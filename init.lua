@@ -91,6 +91,9 @@ return {
     enable = function(self, config)
       dll = require('crusaderautomarket.dll')
 
+      dll.setConfig({
+        file = config.file or "ucp-automarket.json",
+      })
       dll.setAddresses({
         SellResource = core.AOBScan("53 8B 5C 24 0C 56 8B 74 24 0C 57"),
         BuyResource = core.AOBScan("53 8B 5C 24 10 55 8B 6C 24 10 56 8B 74 24 10"),
