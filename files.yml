@@ -5,3 +5,5 @@ files:
     target: "."
   - src: "*.lua"
     target: "."
+  - src: "locale"
+    target: "locale"
