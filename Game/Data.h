@@ -31,19 +31,19 @@ struct U1
 {
 };
 
-static size_t const* const playerIndex   = (size_t const*)0x1A275DC;
-static PlayerData* const   playerData    = (PlayerData*)0x115BFA4;
+static size_t const* playerIndex   = (size_t const*)0x1A275DC;
+static PlayerData*   playerData    = (PlayerData*)0x115BFA4;
 
-static size_t const* const isIngame      = (size_t const*)0x01FE7DB4;
-static size_t const* const isPaused      = (size_t const*)0x01FEA054;
-static size_t const* const ingameTime    = (size_t const*)0x01FE7DA8;
+static size_t const* isIngame      = (size_t const*)0x01FE7DB4;
+static size_t const* isPaused      = (size_t const*)0x01FEA054;
+static size_t const* ingameTime    = (size_t const*)0x01FE7DA8;
 
-static size_t const* const ctrlModifier  = (size_t const*)0xF224EC;
-static size_t const* const shiftModifier = (size_t const*)0xF224F0;
-static size_t const* const altModifier   = (size_t const*)0xF224F4;
+static size_t const* ctrlModifier  = (size_t const*)0xF224EC;
+static size_t const* shiftModifier = (size_t const*)0xF224F0;
+static size_t const* altModifier   = (size_t const*)0xF224F4;
 
-static U0* const u0 = (U0*)0x0112B0B8;
-static U1* const u1 = (U1*)0x00F98520;
+static U0* u0 = (U0*)0x0112B0B8;
+static U1* u1 = (U1*)0x00F98520;
 
 namespace Invoke
 {

@@ -77,19 +77,45 @@ end
 
 local dll
 
-local addresses = {
-  Escape = { address = core.AOBScan("A1 ? ? ? ? 3B C5 74 C1"), size = 5, to = nil},
-  Update = { address = core.AOBScan("39 ? ? ? ? ? 74 15 FF D7"), size = 6, to = nil},
-  -- TODO: all of them
-  SetIngameStatus = {},
-  Mouse = {},
-  SystemKey = {},
-}
+local addresses = {}
+local function findAddresses()
+  local _, playerIndex = utils.AOBExtract("A1 I(? ? ? ?) 83 ? ? ? ? ? ? ? 75 61")
+  local _, playerData = utils.AOBExtract("83 ? I(? ? ? ?) ? C7 ? ? ? ? ? ? ? ? ? 74 0A C7 ? ? ? ? ? ? ? ? ? 83 ? ? ? ? ? ?")
+  local _, isIngame = utils.AOBExtract("89 ? I(? ? ? ?) 89 ? ? ? ? ? 89 ? ? ? ? ? E8 ? ? ? ? 56 6A FF")
+  local _, isPaused = utils.AOBExtract("83 ? I(? ? ? ?) ? 75 CC 5D")
+  local _, ingameTime = utils.AOBExtract("8B ? I(? ? ? ?) 66 8B 54 24 1C")
+  local _, ctrlModifier = utils.AOBExtract("39 ? I(? ? ? ?) 74 08 39 ? ? ? ? ? 75 2B")
+  local _, shiftModifier = ctrlModifier + 4
+  local _, altModifier = shiftModifier + 4
+  local _, u0 = utils.AOBExtract("B9 I(? ? ? ?) E8 ? ? ? ? E9 ? ? ? ? 8B 54 24 14 6A 00")
+  local _, u1 = utils.AOBExtract("B9 I(? ? ? ?) E8 ? ? ? ? A1 ? ? ? ? 8B 54 24 20")
+   addresses = {
+    -- Data
+    playerIndex = playerIndex,
+    playerData = playerData,
+    isIngame = isIngame,
+    isPaused = isPaused,
+    ingameTime = ingameTime,
+    ctrlModifier = ctrlModifier,
+    shiftModifier = shiftModifier,
+    altModifier = altModifier,
+    u0 = u0,
+    u1 = u1,
+    -- Functions
+    Escape = { address = core.AOBScan("A1 ? ? ? ? 3B C5 74 C1"), size = 5, to = nil},
+    Update = { address = core.AOBScan("39 ? ? ? ? ? 74 15 FF D7"), size = 6, to = nil},
+    SetIngameStatus = {address = 13 + core.AOBScan("6A 64 57 B9 ? ? ? ? E8 ? ? ? ? 89 ? ? ? ? ?"), size = 6, to = nil},
+    Mouse = {address = core.AOBScan("66 8B 44 24 04 66 8B 54 24 08"), size = 5, to = nil},
+    SystemKey = {address = core.AOBScan("8D 46 F3 3D D1 00 00 00"), size = 8, to = nil},
+  }
+end
 
 return {
 
     enable = function(self, config)
       dll = require('crusaderautomarket.dll')
+
+      findAddresses()
 
       dll.setConfig({
         file = config.file or "ucp-automarket.json",
@@ -100,19 +126,32 @@ return {
         GetResourceCost = core.AOBScan("8B 44 24 08 8B 8C C1 1C 1F 05 00"),
         GetResourceValue = core.AOBScan("8B 44 24 08 8B 8C C1 20 1F 05 00"),
         GetResourceSpace = core.AOBScan("83 EC 0C 55 8B 6C 24 18 56"),
+        playerIndex = addresses.playerIndex,
+        playerData = addresses.playerData,
+        isIngame = addresses.isIngame,
+        isPaused = addresses.isPaused,
+        ingameTime = addresses.ingameTime,
+        ctrlModifier = addresses.ctrlModifier,
+        shiftModifier = addresses.shiftModifier,
+        altModifier = addresses.altModifier,
+        u0 = addresses.u0,
+        u1 = addresses.u1,
       })
-      if dll.initialize() == false then
-        log(ERROR, 'could not initialize auto market dll')
-      end
-
       -- Do hooks now here
       local dllAddresses = dll.getAddresses()
 
       hook(addresses.Escape.address, addresses.Escape.size, dllAddresses.EscapeCallback, addresses.Escape.to)
       hook(addresses.Update.address, addresses.Update.size, dllAddresses.UpdateCallback, addresses.Update.to)
-      -- TODO: all of them
-
+      hook(addresses.SetIngameStatus.address, addresses.SetIngameStatus.size, dllAddresses.SetIngameStatusCallback, addresses.SetIngameStatus.to)
+      hook(addresses.Mouse.address, addresses.Mouse.size, dllAddresses.MouseCallback, addresses.Mouse.to)
+      hook(addresses.SystemKey.address, addresses.SystemKey.size, dllAddresses.SystemKeyCallback, addresses.SystemKey.to)
       core.writeCode(core.AOBScan("0F ? ? ? ? ? 0F BF 86 E6 00 00 00"), {0x90, 0x90, 0x90, 0x90, 0x90, 0x90, })
+
+      if dll.initialize() == false then
+        log(ERROR, 'could not initialize auto market dll')
+      end
+
+
     end,
 
     disable = function(self, config)

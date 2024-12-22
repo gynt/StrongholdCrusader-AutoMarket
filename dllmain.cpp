@@ -71,20 +71,20 @@ std::string fileName = "ucp-automarket.json";
 
 void Initialize()
 {
-    HANDLE const hProcess = GetCurrentProcess();
+    //HANDLE const hProcess = GetCurrentProcess();
 
-    ASM::Hook((LPVOID)0x004B354D, 5, &EscapeCallback); // Triggered when hitting escape ingame.
-    ASM::Hook((LPVOID)0x0057C3B9, 6, &UpdateCallback); // Triggered after game loop (not every simulated day, but every tick).
-    ASM::Hook((LPVOID)0x00512438, 6, &SetIngameStatusCallback); // Triggered when starting or leaving a game.
-    ASM::Hook((LPVOID)0x00468030, 5, &MouseCallback); // Triggered on mouse input.
-    ASM::Hook((LPVOID)0x004B480B, 8, &SystemKeyCallback);
+    //ASM::Hook((LPVOID)0x004B354D, 5, &EscapeCallback); // Triggered when hitting escape ingame.
+    //ASM::Hook((LPVOID)0x0057C3B9, 6, &UpdateCallback); // Triggered after game loop (not every simulated day, but every tick).
+    //ASM::Hook((LPVOID)0x00512438, 6, &SetIngameStatusCallback); // Triggered when starting or leaving a game.
+    //ASM::Hook((LPVOID)0x00468030, 5, &MouseCallback); // Triggered on mouse input.
+    //ASM::Hook((LPVOID)0x004B480B, 8, &SystemKeyCallback);
 
-    // Don't disable the market the pop-up for the player.
-    {
-        SIZE_T lpNumberOfBytesWritten;
-        char lpBuffer[] = { '\x90', '\x90', '\x90', '\x90', '\x90', '\x90' };
-        WriteProcessMemory(hProcess, (LPVOID)0x0040A07D, lpBuffer, sizeof(lpBuffer), &lpNumberOfBytesWritten);
-    }
+    //// Don't disable the market the pop-up for the player.
+    //{
+    //    SIZE_T lpNumberOfBytesWritten;
+    //    char lpBuffer[] = { '\x90', '\x90', '\x90', '\x90', '\x90', '\x90' };
+    //    WriteProcessMemory(hProcess, (LPVOID)0x0040A07D, lpBuffer, sizeof(lpBuffer), &lpNumberOfBytesWritten);
+    //}
 
     g_market.Load(fileName);
 }
@@ -109,7 +109,54 @@ bool setAddressForName(std::string const & name, DWORD const value) {
         Game::Invoke::SellResource = (void(__stdcall*)(size_t player, size_t resource, size_t amount)) value;
         return true;
     }
+    if (name == "BuyResource") {
+        Game::Invoke::BuyResource = (int(__stdcall*)(size_t player, size_t resource, size_t amount)) value;
+        return true;
+    }
+    if (name == "GetResourceCost") {
+        Game::Invoke::GetResourceCost = (int(__thiscall*)(Game::U0* self, size_t player, size_t resource, size_t amount)) value;
+        return true;
+    }
+    if (name == "GetResourceValue") {
+        Game::Invoke::GetResourceValue = (int(__thiscall*)(Game::U0 * self, size_t player, size_t resource, size_t amount)) value;
+        return true;
+    }
+    if (name == "GetResourceSpace") {
+        Game::Invoke::GetResourceSpace = (int(__thiscall*)(Game::U1 * self, size_t player, size_t resource)) value;
+        return true;
+    }
 
+    // Data
+    if (name == "playerIndex") {
+        Game::playerIndex = (const size_t *) value;
+    }
+    if (name == "playerData") {
+        Game::playerData = (Game::PlayerData *)value;
+    }
+    if (name == "isIngame") {
+        Game::isIngame = (const size_t*)value;
+    }
+    if (name == "isPaused") {
+        Game::isPaused = (const size_t*)value;
+    }
+    if (name == "ingameTime") {
+        Game::ingameTime = (const size_t*)value;
+    }
+    if (name == "ctrlModifier") {
+        Game::ctrlModifier = (const size_t*)value;
+    }
+    if (name == "shiftModifier") {
+        Game::shiftModifier = (const size_t*)value;
+    }
+    if (name == "altModifier") {
+        Game::altModifier = (const size_t*)value;
+    }
+    if (name == "u0") {
+        Game::u0 = (Game::U0*)value;
+    }
+    if (name == "u1") {
+        Game::u1 = (Game::U1*)value;
+    }
     return false;
 }
 
@@ -156,6 +203,9 @@ int luaSetAddresses(lua_State* L) {
         }
 
         DWORD value = lua_tointeger(L, -1);
+        if (value == 0) {
+            return luaL_error(L, "Cannot set address to 0. key: '%s'", key.c_str());
+        }
         if (!setAddressForName(key, value)) {
             return luaL_error(L, "An error occurred while setting key: '%s' (unknown key?)", key.c_str());
         }
