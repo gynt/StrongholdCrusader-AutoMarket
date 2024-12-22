@@ -185,7 +185,7 @@ static void RegisterResourceButton()
         WNDCLASS wc = { 0 };
         wc.style = CS_HREDRAW | CS_VREDRAW;
         wc.lpszClassName = L"AutoMarketButton";
-        wc.hInstance = Game::UI::hInstance;
+        wc.hInstance = (HINSTANCE)GetWindowLongPtr(*Game::UI::hWindow, GWLP_HINSTANCE);
         wc.lpfnWndProc = WndProcButton;
         wc.hCursor = LoadCursor(0, IDC_ARROW);
         if (!RegisterClass(&wc))

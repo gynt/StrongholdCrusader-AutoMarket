@@ -7,6 +7,7 @@
 #include <lua.hpp>
 #include "ucp3.hpp"
 #include <string>
+#include <Game/UI.h>
 
 HMODULE g_module = NULL;
 
@@ -165,6 +166,10 @@ bool setAddressForName(std::string const & name, DWORD const value) {
     }
     if (name == "u1") {
         Game::u1 = (Game::U1*)value;
+        return true;
+    }
+    if (name == "hWindow") {
+        Game::UI::hWindow = (HWND const *) value;
         return true;
     }
     return false;

@@ -299,7 +299,7 @@ static void RegisterAutoMarketUI()
     {
         WNDCLASS wc = { 0 };
         wc.lpszClassName = L"AutoMarketUI";
-        wc.hInstance     = Game::UI::hInstance;
+        wc.hInstance     = (HINSTANCE)GetWindowLongPtr(*Game::UI::hWindow, GWLP_HINSTANCE);
         wc.style         = CS_HREDRAW | CS_VREDRAW;
         wc.lpfnWndProc   = WndProcUI;
         wc.hCursor       = LoadCursor(0, IDC_ARROW);
@@ -332,10 +332,10 @@ static HWND CreateAutoMarketUI(Manager& market, std::function<void()> onExit, in
 HWND Open(Manager& market, std::function<void()> onExit)
 {
     RECT winSize;
-    GetWindowRect(Game::UI::hWindow, &winSize);
+    GetWindowRect(*Game::UI::hWindow, &winSize);
     int x = (winSize.right - winSize.left - Style::windowWidth) / 2;
     int y = (winSize.bottom - winSize.top - Style::windowHeight) / 2;
-    return CreateAutoMarketUI(market, std::move(onExit), x, y, Style::windowWidth, Style::windowHeight, Game::UI::hWindow);
+    return CreateAutoMarketUI(market, std::move(onExit), x, y, Style::windowWidth, Style::windowHeight, *Game::UI::hWindow);
 }
 
 void Close(HWND hWnd)

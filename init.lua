@@ -89,6 +89,7 @@ local function findAddresses()
   local altModifier = shiftModifier + 4
   local _, u0 = utils.AOBExtract("B9 I(? ? ? ?) E8 ? ? ? ? E9 ? ? ? ? 8B 54 24 14 6A 00")
   local _, u1 = utils.AOBExtract("B9 I(? ? ? ?) E8 ? ? ? ? A1 ? ? ? ? 8B 54 24 20")
+  local _, hWindow = utils.AOBExtract("89 ? I(? ? ? ?) FF ? ? ? ? ? E9 ? ? ? ? 8B ? ? ? ? ? 83 FA 29")
    addresses = {
     -- Data
     playerIndex = playerIndex,
@@ -101,6 +102,7 @@ local function findAddresses()
     altModifier = altModifier,
     u0 = u0,
     u1 = u1,
+    hWindow = hWindow,
     -- Functions
     Escape = { address = core.AOBScan("A1 ? ? ? ? 3B C5 74 C1"), size = 5, to = nil},
     Update = { address = core.AOBScan("39 ? ? ? ? ? 74 15 FF D7"), size = 6, to = nil},
