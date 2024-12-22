@@ -40,7 +40,7 @@ HWND CreateResourceEdit(size_t value, Manager& market, int x, int y, size_t w, s
 
     HWND hEdit = CreateWindow(
         L"Edit", buf,
-        WS_CHILD | WS_VISIBLE | WS_BORDER,
+        WS_CHILD | WS_VISIBLE | WS_BORDER | WS_EX_NOPARENTNOTIFY,
         x, y, w, h,
         hParent,
         (HMENU)id,

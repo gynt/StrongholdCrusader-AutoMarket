@@ -7,4 +7,4 @@ config-sparse:
         window:
           type:
             contents:
-              required-value: borderlessWindow
+              suggested-value: borderlessWindow

@@ -3,3 +3,7 @@ display-name: Auto Market
 version: 0.0.1
 author: Sh0wd0wn
 type: module
+dependencies:
+  framework: ">=3.0.5"
+  frontend: ">=1.0.10"
+  graphicsApiReplacer: ">=1.2.0"
