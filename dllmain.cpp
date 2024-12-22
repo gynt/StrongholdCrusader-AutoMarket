@@ -129,33 +129,43 @@ bool setAddressForName(std::string const & name, DWORD const value) {
     // Data
     if (name == "playerIndex") {
         Game::playerIndex = (const size_t *) value;
+        return true;
     }
     if (name == "playerData") {
         Game::playerData = (Game::PlayerData *)value;
+        return true;
     }
     if (name == "isIngame") {
         Game::isIngame = (const size_t*)value;
+        return true;
     }
     if (name == "isPaused") {
         Game::isPaused = (const size_t*)value;
+        return true;
     }
     if (name == "ingameTime") {
         Game::ingameTime = (const size_t*)value;
+        return true;
     }
     if (name == "ctrlModifier") {
         Game::ctrlModifier = (const size_t*)value;
+        return true;
     }
     if (name == "shiftModifier") {
         Game::shiftModifier = (const size_t*)value;
+        return true;
     }
     if (name == "altModifier") {
         Game::altModifier = (const size_t*)value;
+        return true;
     }
     if (name == "u0") {
         Game::u0 = (Game::U0*)value;
+        return true;
     }
     if (name == "u1") {
         Game::u1 = (Game::U1*)value;
+        return true;
     }
     return false;
 }
@@ -173,7 +183,14 @@ int luaSetConfig(lua_State* L) {
         std::string key = lua_tostring(L, -2);
 
         if (key == "file") {
-            fileName = lua_tostring(L, -1);
+            std::string candidate = lua_tostring(L, -1);
+            if (candidate.size() > 0) {
+                fileName = candidate;
+            }
+            else {
+                return luaL_error(L, "value for 'file' not appropriate");
+            }
+            
         }
         else {
             return luaL_error(L, "An error occurred while setting key: '%s' (unknown key?)", key.c_str());
@@ -255,7 +272,7 @@ int luaInitialize(lua_State* L) {
     return 1;
 }
 
-int luaopen_crusaderautomarket(lua_State* L) {
+extern "C" int __declspec(dllexport) luaopen_crusaderautomarket(lua_State * L) {
     
 
     // "debug" log level message
@@ -268,6 +285,9 @@ int luaopen_crusaderautomarket(lua_State* L) {
 
     lua_pushcfunction(L, luaSetAddresses);
     lua_setfield(L, -2, "setAddresses");
+
+    lua_pushcfunction(L, luaGetAddresses);
+    lua_setfield(L, -2, "getAddresses");
 
     lua_pushcfunction(L, luaInitialize);
     lua_setfield(L, -2, "initialize");

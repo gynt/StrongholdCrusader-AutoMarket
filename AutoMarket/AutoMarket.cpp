@@ -294,6 +294,7 @@ static bool TryLoadJson(T& outValue, const json& j, char const* key, TDefault&& 
 void Manager::Load(const std::string & file)
 {
     json j;
+    if (std::filesystem::exists(file))
     {
         std::ifstream f(file);
         f >> j;

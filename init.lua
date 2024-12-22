@@ -85,8 +85,8 @@ local function findAddresses()
   local _, isPaused = utils.AOBExtract("83 ? I(? ? ? ?) ? 75 CC 5D")
   local _, ingameTime = utils.AOBExtract("8B ? I(? ? ? ?) 66 8B 54 24 1C")
   local _, ctrlModifier = utils.AOBExtract("39 ? I(? ? ? ?) 74 08 39 ? ? ? ? ? 75 2B")
-  local _, shiftModifier = ctrlModifier + 4
-  local _, altModifier = shiftModifier + 4
+  local shiftModifier = ctrlModifier + 4
+  local altModifier = shiftModifier + 4
   local _, u0 = utils.AOBExtract("B9 I(? ? ? ?) E8 ? ? ? ? E9 ? ? ? ? 8B 54 24 14 6A 00")
   local _, u1 = utils.AOBExtract("B9 I(? ? ? ?) E8 ? ? ? ? A1 ? ? ? ? 8B 54 24 20")
    addresses = {
@@ -117,8 +117,10 @@ return {
 
       findAddresses()
 
+      local cf = config.file or "ucp-automarket.json"
+      cf = ucp.internal.resolveAliasedPath(cf)
       dll.setConfig({
-        file = config.file or "ucp-automarket.json",
+        file = cf,
       })
       dll.setAddresses({
         SellResource = core.AOBScan("53 8B 5C 24 0C 56 8B 74 24 0C 57"),
