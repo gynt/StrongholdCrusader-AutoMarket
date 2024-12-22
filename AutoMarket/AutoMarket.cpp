@@ -116,16 +116,9 @@ void Manager::Close()
     }
 }
 
-void Manager::Toggle()
+bool Manager::IsOpened() const
 {
-    if (m_ui)
-    {
-        Close();
-    }
-    else
-    {
-        Open();
-    }
+    return m_ui != NULL;
 }
 
 void Manager::SetEnabled(bool enabled)

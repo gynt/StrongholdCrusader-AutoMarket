@@ -8,6 +8,22 @@ HMODULE g_module = NULL;
 
 AutoMarket::Manager g_market;
 
+static void ToggleAutoMarket()
+{
+    if (g_market.IsOpened())
+    {
+        g_market.Close();
+    }
+    else
+    {
+        size_t playerIndex = *Game::playerIndex;
+        if (playerIndex && Game::status->isIngame && Game::playerData[playerIndex].hasMarket)
+        {
+            g_market.Open();
+        }
+    }
+}
+
 void __cdecl UpdateCallback(ASM::HookRegisters)
 {
     if (Game::status->isIngame &&
@@ -26,7 +42,7 @@ void __cdecl SystemKeyCallback(ASM::HookRegisters registers)
         switch (registers.esi)
         {
         case 'M':
-            g_market.Toggle();
+            ToggleAutoMarket();
             break;
         default:
             break;
