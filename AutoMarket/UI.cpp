@@ -31,11 +31,14 @@ namespace Style
     static constexpr int windowHeight = 8 * controlDist + 5 * resGroupHeight + (controlDist + btnHeight);
 }
 
+static constexpr int s_exitKeys[] = { VK_ESCAPE, VK_RETURN, 'M' };
+
 inline bool IsExitKey(int key)
 {
-    static constexpr int s_exitKeys[] = { VK_ESCAPE, VK_RETURN, 'M' };
     return std::find(std::begin(s_exitKeys), std::end(s_exitKeys), key) != std::end(s_exitKeys);
 }
+
+static HBITMAP s_background = NULL;
 
 class AutoMarketUI
 {
@@ -130,7 +133,9 @@ public:
 
     void OnPaint(HWND hWnd)
     {
-        static HBITMAP s_background = LoadBitmap(g_module, MAKEINTRESOURCE(IDB_BACKGROUND));
+        if (g_module != NULL && s_background == NULL) {
+            s_background = LoadBitmap(g_module, MAKEINTRESOURCE(IDB_BACKGROUND));
+        }
 
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hWnd, &ps);
@@ -292,9 +297,9 @@ static LRESULT CALLBACK WndProcUI(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lP
     return 0;
 }
 
+static bool s_registered = false;
 static void RegisterAutoMarketUI()
 {
-    static bool s_registered = false;
     if (!s_registered)
     {
         WNDCLASS wc = { 0 };

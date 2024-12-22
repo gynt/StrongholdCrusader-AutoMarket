@@ -1,0 +1,10 @@
+meta:
+  version: 1.0.0
+config-sparse:
+  modules:
+    graphicsApiReplacer:
+      config:
+        window:
+          type:
+            contents:
+              required-value: borderlessWindow

@@ -13,6 +13,9 @@ static constexpr float s_disableItemScale = 0.6f;
 static constexpr int   s_itemsBitmapGridSize   = 45;
 static constexpr DWORD s_itemsBitmapAlphaColor = RGB(255, 0, 255);
 
+static HBITMAP s_hbmItems = NULL;
+static HBITMAP s_hbmItemsMask = NULL;
+
 static void RedrawParent(HWND hWnd)
 {
     HWND hParent = GetParent(hWnd);
@@ -61,8 +64,10 @@ public:
 
     void OnPaint(HWND hWnd)
     {
-        static HBITMAP const s_hbmItems = LoadBitmap(g_module, MAKEINTRESOURCE(IDB_ITEMS));
-        static HBITMAP const s_hbmItemsMask = CreateBitmapMask(s_hbmItems, s_itemsBitmapAlphaColor);
+        if (g_module != NULL && s_hbmItems == NULL) {
+            s_hbmItems = LoadBitmap(g_module, MAKEINTRESOURCE(IDB_ITEMS));
+            s_hbmItemsMask = CreateBitmapMask(s_hbmItems, s_itemsBitmapAlphaColor);
+        }
 
         int xSrc = s_itemsBitmapGridSize * m_resource;
         int ySrc = s_itemsBitmapGridSize * m_hover;
@@ -177,9 +182,10 @@ static LRESULT CALLBACK WndProcButton(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
     return 0;
 }
 
+static bool s_registered = false;
+
 static void RegisterResourceButton()
 {
-    static bool s_registered = false;
     if (!s_registered)
     {
         WNDCLASS wc = { 0 };

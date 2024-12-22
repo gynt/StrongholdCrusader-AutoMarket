@@ -69,9 +69,10 @@ constexpr char const* names[] = {
     "MetalArmor"
 };
 
+static constexpr size_t invalids[] = { None, u1, u2, u3, Gold };
+
 inline bool IsValid(size_t resource)
 {
-    static constexpr size_t invalids[] = { None, u1, u2, u3, Gold };
     return std::find(std::begin(invalids), std::end(invalids), resource) == std::end(invalids);
 }
 
