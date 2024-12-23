@@ -5,6 +5,6 @@ config-sparse:
     graphicsApiReplacer:
       config:
         window:
-          type:
+          minimizeOnLostFocus:
             contents:
-              suggested-value: borderlessWindow
+              suggested-value: false

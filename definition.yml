@@ -6,4 +6,6 @@ type: module
 dependencies:
   framework: ">=3.0.5"
   frontend: ">=1.0.10"
-  graphicsApiReplacer: ">=1.2.0"
+  # Required because otherwise the overlay menu
+  # doesn't show as the game is rendered over it
+  graphicsApiReplacer: ">=1.2.1"
