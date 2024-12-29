@@ -110,52 +110,64 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
 bool setAddressForName(std::string const & name, DWORD const value) {
     if (name == "SellResource") {
         Game::Invoke::SellResource = (void(__stdcall*)(size_t player, size_t resource, size_t amount)) value;
+        ucp_log(Verbosity_2, "SellResource set");
         return true;
     }
     if (name == "BuyResource") {
         Game::Invoke::BuyResource = (int(__stdcall*)(size_t player, size_t resource, size_t amount)) value;
+        ucp_log(Verbosity_2, "BuyResource set");
         return true;
     }
     if (name == "GetResourceCost") {
         Game::Invoke::GetResourceCost = (int(__thiscall*)(Game::U0* self, size_t player, size_t resource, size_t amount)) value;
+        ucp_log(Verbosity_2, "GetResourceCost set");
         return true;
     }
     if (name == "GetResourceValue") {
         Game::Invoke::GetResourceValue = (int(__thiscall*)(Game::U0 * self, size_t player, size_t resource, size_t amount)) value;
+        ucp_log(Verbosity_2, "GetResourceValue set");
         return true;
     }
     if (name == "GetResourceSpace") {
         Game::Invoke::GetResourceSpace = (int(__thiscall*)(Game::U1 * self, size_t player, size_t resource)) value;
+        ucp_log(Verbosity_2, "GetResourceSpace set");
         return true;
     }
 
     // Data
     if (name == "playerIndex") {
         Game::playerIndex = (const size_t *) value;
+        ucp_log(Verbosity_2, "playerIndex set");
         return true;
     }
     if (name == "playerData") {
         Game::playerData = (Game::PlayerData *)value;
+        ucp_log(Verbosity_2, "playerData set");
         return true;
     }
     if (name == "ingameTime") {
         Game::status = (const Game::Status*)value;
+        ucp_log(Verbosity_2, "ingameTime set");
         return true;
     }
     if (name == "ctrlModifier") {
         Game::input = (const Game::Input*)value;
+        ucp_log(Verbosity_2, "ctrlModifier set");
         return true;
     }
     if (name == "u0") {
         Game::u0 = (Game::U0*)value;
+        ucp_log(Verbosity_2, "u0 set");
         return true;
     }
     if (name == "u1") {
         Game::u1 = (Game::U1*)value;
+        ucp_log(Verbosity_2, "u1 set");
         return true;
     }
     if (name == "hWindow") {
-        Game::UI::hWindow = (HWND const *) value;
+        Game::UI::hWindow = (HWND *) value;
+        ucp_log(Verbosity_2, "hWindow set");
         return true;
     }
     return false;

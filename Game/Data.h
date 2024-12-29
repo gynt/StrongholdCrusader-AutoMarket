@@ -50,21 +50,22 @@ struct U1
 {
 };
 
-static PlayerData*     playerData  = (PlayerData*)0x0115BFA4;   // 0x011EEBE4
-static size_t const* playerIndex = (size_t const*)0x01A275DC; // 0x024BAADC
-static Status const* status      = (Status const*)0x01FE7DA8; // 0x02A7B2A8
-static Input const*   input       = (Input const*)0x00F224EC;  // 0x00F2296C
 
-static U0* u0 = (U0*)0x0112B0B8; // 0x0112B538
-static U1* u1 = (U1*)0x00F98520; // 0x00F989A0
+extern PlayerData* playerData;
+extern size_t const* playerIndex;
+extern Status const* status;
+extern Input const* input;
+
+extern U0* u0;
+extern U1* u1;
 
 namespace Invoke
 {
-static auto SellResource     = (void(__stdcall*)(size_t player, size_t resource, size_t amount))0x004CBFA0; //0x004CC1F0
-static auto BuyResource      = (int(__stdcall*)(size_t player, size_t resource, size_t amount))0x004CC000;  //0x004CC250
-static auto GetResourceCost  = (int(__thiscall*)(U0* self, size_t player, size_t resource, size_t amount))0x004588A0; // 0x00458AD0
-static auto GetResourceValue = (int(__thiscall*)(U0* self, size_t player, size_t resource, size_t amount))0x00458910; // 0x00458B40
-static auto GetResourceSpace = (int(__thiscall*)(U1* self, size_t player, size_t resource))0x0040C1F0; // 0x0040C200
+    extern void(__stdcall* SellResource)(size_t player, size_t resource, size_t amount);
+    extern int(__stdcall* BuyResource)(size_t player, size_t resource, size_t amount);
+    extern int(__thiscall* GetResourceCost)(U0* self, size_t player, size_t resource, size_t amount);
+    extern int(__thiscall* GetResourceValue)(U0* self, size_t player, size_t resource, size_t amount);
+    extern int(__thiscall* GetResourceSpace)(U1* self, size_t player, size_t resource);
 
 }
 

@@ -17,6 +17,4 @@ struct HookRegisters
     int eax;
 };
 
-bool Hook(LPVOID from, SIZE_T len, void(__cdecl* f)(HookRegisters), LPVOID to = NULL);
-
 }

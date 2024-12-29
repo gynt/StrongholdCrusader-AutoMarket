@@ -7,6 +7,6 @@
 namespace Game::UI
 {
 
-static HWND const *      hWindow   = (HWND const*)0x00F983E4;
+extern HWND *      hWindow; // 0x00F983E4 // 0x00f98864
 
 }
