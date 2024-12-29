@@ -124,11 +124,13 @@ return {
       dll.setConfig({
         file = cf,
       })
+      local _, getResourceValue = utils.AOBExtract("@(E8 ? ? ? ?) 01 ? ? ? ? ? ? 8B CE 69 C9 F4 39 00 00 01 ? ? ? ? ? 01 ? ? ? ? ? 6A 00 57 ")
+      local _, getResourceCost = utils.AOBExtract("@(E8 ? ? ? ?) 53 55 56 B9 ? ? ? ? ")
       dll.setAddresses({
         SellResource = core.AOBScan("53 8B 5C 24 0C 56 8B 74 24 0C 57"),
         BuyResource = core.AOBScan("53 8B 5C 24 10 55 8B 6C 24 10 56 8B 74 24 10"),
-        GetResourceCost = core.AOBScan("8B 44 24 08 8B 8C C1 1C 1F 05 00"),
-        GetResourceValue = core.AOBScan("8B 44 24 08 8B 8C C1 20 1F 05 00"),
+        GetResourceCost = getResourceCost,
+        GetResourceValue = getResourceValue,
         GetResourceSpace = core.AOBScan("83 EC 0C 55 8B 6C 24 18 56"),
         playerIndex = addresses.playerIndex,
         playerData = addresses.playerData,
