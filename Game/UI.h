@@ -6,5 +6,7 @@
 
 namespace Game::UI
 {
+
 static HWND const *      hWindow   = (HWND const*)0x00F983E4;
+
 }

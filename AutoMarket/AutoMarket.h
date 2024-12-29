@@ -28,7 +28,7 @@ public:
 
     void   Open();
     void   Close();
-    void   Toggle();
+    bool   IsOpened() const;
 
     void   SetEnabled(bool enabled);
     void   SetResourceEnabled(size_t resource, bool enabled);

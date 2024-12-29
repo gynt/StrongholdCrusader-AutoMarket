@@ -13,25 +13,41 @@ HMODULE g_module = NULL;
 
 AutoMarket::Manager g_market;
 
+static void ToggleAutoMarket()
+{
+    if (g_market.IsOpened())
+    {
+        g_market.Close();
+    }
+    else
+    {
+        size_t playerIndex = *Game::playerIndex;
+        if (playerIndex && Game::status->isIngame && Game::playerData[playerIndex].hasMarket)
+        {
+            g_market.Open();
+        }
+    }
+}
+
 void __cdecl UpdateCallback(ASM::HookRegisters)
 {
-    if (*Game::isIngame &&
-        !*Game::isPaused &&
+    if (Game::status->isIngame &&
+        !Game::status->isPaused &&
         *Game::playerIndex)
     {
-        size_t const time = *Game::ingameTime;
+        size_t const time = Game::status->ingameTime;
         g_market.Update(time);
     }
 }
 
 void __cdecl SystemKeyCallback(ASM::HookRegisters registers)
 {
-    if (*Game::altModifier)
+    if (Game::input->altModifier)
     {
         switch (registers.esi)
         {
         case 'M':
-            g_market.Toggle();
+            ToggleAutoMarket();
             break;
         default:
             break;
@@ -73,20 +89,6 @@ std::string fileName = "ucp-automarket.json";
 void Initialize()
 {
     //HANDLE const hProcess = GetCurrentProcess();
-
-    //ASM::Hook((LPVOID)0x004B354D, 5, &EscapeCallback); // Triggered when hitting escape ingame.
-    //ASM::Hook((LPVOID)0x0057C3B9, 6, &UpdateCallback); // Triggered after game loop (not every simulated day, but every tick).
-    //ASM::Hook((LPVOID)0x00512438, 6, &SetIngameStatusCallback); // Triggered when starting or leaving a game.
-    //ASM::Hook((LPVOID)0x00468030, 5, &MouseCallback); // Triggered on mouse input.
-    //ASM::Hook((LPVOID)0x004B480B, 8, &SystemKeyCallback);
-
-    //// Don't disable the market the pop-up for the player.
-    //{
-    //    SIZE_T lpNumberOfBytesWritten;
-    //    char lpBuffer[] = { '\x90', '\x90', '\x90', '\x90', '\x90', '\x90' };
-    //    WriteProcessMemory(hProcess, (LPVOID)0x0040A07D, lpBuffer, sizeof(lpBuffer), &lpNumberOfBytesWritten);
-    //}
-
     g_market.Load(fileName);
 }
 
