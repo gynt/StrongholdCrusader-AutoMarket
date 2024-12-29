@@ -337,7 +337,9 @@ static HWND CreateAutoMarketUI(Manager& market, std::function<void()> onExit, in
 HWND Open(Manager& market, std::function<void()> onExit)
 {
     RECT winSize;
-    GetWindowRect(*Game::UI::hWindow, &winSize);
+    if (!GetWindowRect(*Game::UI::hWindow, &winSize)) {
+        MessageBoxA(NULL, ("Failed to get window rect. GetLastError() => (decimal) " + std::to_string(GetLastError())).c_str(), "Fail", MB_OK);
+    };
     int x = (winSize.right - winSize.left - Style::windowWidth) / 2;
     int y = (winSize.bottom - winSize.top - Style::windowHeight) / 2;
     return CreateAutoMarketUI(market, std::move(onExit), x, y, Style::windowWidth, Style::windowHeight, *Game::UI::hWindow);

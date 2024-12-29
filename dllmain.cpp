@@ -138,28 +138,12 @@ bool setAddressForName(std::string const & name, DWORD const value) {
         Game::playerData = (Game::PlayerData *)value;
         return true;
     }
-    if (name == "isIngame") {
-        Game::isIngame = (const size_t*)value;
-        return true;
-    }
-    if (name == "isPaused") {
-        Game::isPaused = (const size_t*)value;
-        return true;
-    }
     if (name == "ingameTime") {
-        Game::ingameTime = (const size_t*)value;
+        Game::status = (const Game::Status*)value;
         return true;
     }
     if (name == "ctrlModifier") {
-        Game::ctrlModifier = (const size_t*)value;
-        return true;
-    }
-    if (name == "shiftModifier") {
-        Game::shiftModifier = (const size_t*)value;
-        return true;
-    }
-    if (name == "altModifier") {
-        Game::altModifier = (const size_t*)value;
+        Game::input = (const Game::Input*)value;
         return true;
     }
     if (name == "u0") {

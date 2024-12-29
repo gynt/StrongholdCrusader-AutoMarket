@@ -81,12 +81,8 @@ local addresses = {}
 local function findAddresses()
   local _, playerIndex = utils.AOBExtract("A1 I(? ? ? ?) 83 ? ? ? ? ? ? ? 75 61")
   local _, playerData = utils.AOBExtract("83 ? I(? ? ? ?) ? C7 ? ? ? ? ? ? ? ? ? 74 0A C7 ? ? ? ? ? ? ? ? ? 83 ? ? ? ? ? ?")
-  local _, isIngame = utils.AOBExtract("89 ? I(? ? ? ?) 89 ? ? ? ? ? 89 ? ? ? ? ? E8 ? ? ? ? 56 6A FF")
-  local _, isPaused = utils.AOBExtract("83 ? I(? ? ? ?) ? 75 CC 5D")
   local _, ingameTime = utils.AOBExtract("8B ? I(? ? ? ?) 66 8B 54 24 1C")
   local _, ctrlModifier = utils.AOBExtract("39 ? I(? ? ? ?) 74 08 39 ? ? ? ? ? 75 2B")
-  local shiftModifier = ctrlModifier + 4
-  local altModifier = shiftModifier + 4
   local _, u0 = utils.AOBExtract("B9 I(? ? ? ?) E8 ? ? ? ? E9 ? ? ? ? 8B 54 24 14 6A 00")
   local _, u1 = utils.AOBExtract("B9 I(? ? ? ?) E8 ? ? ? ? A1 ? ? ? ? 8B 54 24 20")
   local _, hWindow = utils.AOBExtract("89 ? I(? ? ? ?) FF ? ? ? ? ? E9 ? ? ? ? 8B ? ? ? ? ? 83 FA 29")
@@ -94,12 +90,8 @@ local function findAddresses()
     -- Data
     playerIndex = playerIndex,
     playerData = playerData,
-    isIngame = isIngame,
-    isPaused = isPaused,
     ingameTime = ingameTime,
     ctrlModifier = ctrlModifier,
-    shiftModifier = shiftModifier,
-    altModifier = altModifier,
     u0 = u0,
     u1 = u1,
     hWindow = hWindow,
@@ -134,14 +126,11 @@ return {
         GetResourceSpace = core.AOBScan("83 EC 0C 55 8B 6C 24 18 56"),
         playerIndex = addresses.playerIndex,
         playerData = addresses.playerData,
-        isIngame = addresses.isIngame,
-        isPaused = addresses.isPaused,
         ingameTime = addresses.ingameTime,
         ctrlModifier = addresses.ctrlModifier,
-        shiftModifier = addresses.shiftModifier,
-        altModifier = addresses.altModifier,
         u0 = addresses.u0,
         u1 = addresses.u1,
+        hWindow = addresses.hWindow,
       })
       -- Do hooks now here
       local dllAddresses = dll.getAddresses()
