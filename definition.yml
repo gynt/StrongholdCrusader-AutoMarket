@@ -8,4 +8,4 @@ dependencies:
   frontend: ">=1.0.10"
   # Required because otherwise the overlay menu
   # doesn't show as the game is rendered over it
-  graphicsApiReplacer: ">=1.2.1"
+  graphicsApiReplacer: ">=1.3.0"
