@@ -70,28 +70,29 @@ void Manager::Update(size_t time)
     }
     m_nextTime = time + m_interval;
 
-    for (size_t i = 0; i < Game::Resource::Max; ++i, ++m_curRes)
+    for (size_t i = 0; i < Game::Resource::Max; ++i)
     {
+        size_t resource = m_curRes++;
         if (m_curRes == Game::Resource::Max)
         {
             m_curRes = 0;
         }
 
-        if (!Game::Resource::IsValid(m_curRes))
+        if (!Game::Resource::IsValid(resource))
         {
             continue;
         }
 
-        if (IsResourceEnabled(m_curRes))
+        if (IsResourceEnabled(resource))
         {
-            size_t const current = Game::playerData[*Game::playerIndex].resources[m_curRes];
-            if (current < GetResourceMin(m_curRes) &&
-                TryBuy(m_curRes, GetResourceMin(m_curRes) - current))
+            size_t const current = Game::playerData[*Game::playerIndex].resources[resource];
+            if (current < GetResourceMin(resource) &&
+                TryBuy(resource, GetResourceMin(resource) - current))
             {
                 break;
             }
-            else if (current > GetResourceMax(m_curRes) &&
-                TrySell(m_curRes, current - GetResourceMax(m_curRes)))
+            else if (current > GetResourceMax(resource) &&
+                TrySell(resource, current - GetResourceMax(resource)))
             {
                 break;
             }
