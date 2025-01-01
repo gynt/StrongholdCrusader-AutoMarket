@@ -109,6 +109,7 @@ void Manager::Open()
 
 void Manager::Close()
 {
+    Save();
     if (m_ui)
     {
         UI::Close(m_ui);
