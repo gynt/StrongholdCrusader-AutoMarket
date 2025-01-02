@@ -26,9 +26,11 @@ static void ToggleAutoMarket()
 
 void __cdecl UpdateCallback(ASM::HookRegisters)
 {
-    if (Game::status->isIngame &&
+    size_t playerIndex = *Game::playerIndex;
+    if (playerIndex &&
+        Game::status->isIngame &&
         !Game::status->isPaused &&
-        *Game::playerIndex)
+        Game::playerData[playerIndex].hasMarket)
     {
         size_t const time = Game::status->ingameTime;
         g_market.Update(time);
