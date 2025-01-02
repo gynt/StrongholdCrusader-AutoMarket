@@ -108,6 +108,7 @@ public:
 
         x = Style::controlDist;
         CreateEnableButton(m_market, x, y, Style::btnWidth, Style::btnHeight, hWnd, s_idBtnEnable);
+
         x = Style::windowWidth - Style::controlDist - Style::btnWidth;
         CreateButton(L"Exit", x, y, Style::btnWidth, Style::btnHeight, hWnd, s_idBtnExit);
     }
@@ -144,6 +145,21 @@ public:
 
         SelectObject(hdcMem, s_background);
         StretchBlt(hdc, 0, 0, rect.right - rect.left, rect.bottom - rect.top, hdcMem, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY);
+
+        {
+            SetBkMode(hdc, TRANSPARENT);
+
+            int x = Style::controlDist + Style::btnWidth + Style::controlDist;
+            int y = Style::windowHeight - Style::controlDist - Style::btnHeight;
+            int w = Style::btnWidth * 2;
+            int h = Style::btnHeight;
+            rect = { x, y, x + w, y + h };
+
+            wchar_t buf[128];
+            int len = swprintf_s(buf, L"Fee: %d %%", m_market.GetFee());
+
+            DrawText(hdc, buf, len, &rect, DT_LEFT | DT_VCENTER | DT_SINGLELINE);
+        }
 
         DeleteDC(hdcMem);
         EndPaint(hWnd, &ps);
