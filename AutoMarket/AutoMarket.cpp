@@ -85,14 +85,19 @@ void Manager::Update(size_t time)
 
         if (IsResourceEnabled(resource))
         {
+            size_t minValue = GetResourceMin(resource);
+            size_t maxValue = GetResourceMax(resource);
+
+            // Adjust min/max values to not resell resources that were auto-bought.
+            minValue = std::min(minValue, maxValue);
+            maxValue = std::max(minValue, maxValue);
+
             size_t const current = Game::playerData[*Game::playerIndex].resources[resource];
-            if (current < GetResourceMin(resource) &&
-                TryBuy(resource, GetResourceMin(resource) - current))
+            if (current < minValue && TryBuy(resource, minValue - current))
             {
                 break;
             }
-            else if (current > GetResourceMax(resource) &&
-                TrySell(resource, current - GetResourceMax(resource)))
+            else if (current > maxValue && TrySell(resource, current - maxValue))
             {
                 break;
             }

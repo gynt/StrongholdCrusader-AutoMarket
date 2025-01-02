@@ -121,7 +121,7 @@ public:
             break;
         case EN_CHANGE:
         case EN_UPDATE:
-            OnEditUpdate(hWnd, LOWORD(wParam), (HWND)lParam);
+            OnEditUpdate(LOWORD(wParam), (HWND)lParam);
             break;
         default:
             break;
@@ -180,29 +180,7 @@ protected:
         CreateResourceEdit(m_market.GetResourceMax(resource), m_market, x, y, Style::resEditWidth, Style::resEditHeight, hParent, s_idEditsMax + resource);
     }
 
-    void SetResourceMax(HWND hWnd, size_t resource, size_t value)
-    {
-        m_market.SetResourceMax(resource, value);
-        if (value < m_market.GetResourceMin(resource))
-        {
-            // Also set the min value in this case.
-            HWND hMinEdit = FindChildWindowById(hWnd, (HMENU)(s_idEditsMin + resource));
-            SetResourceEditValue(hMinEdit, value); // this will send a command, which will update the variable.
-        }
-    }
-
-    void SetResourceMin(HWND hWnd, size_t resource, size_t value)
-    {
-        m_market.SetResourceMin(resource, value);
-        if (value > m_market.GetResourceMax(resource))
-        {
-            // Also set the max value in this case.
-            HWND hMaxEdit = FindChildWindowById(hWnd, (HMENU)(s_idEditsMax + resource));
-            SetResourceEditValue(hMaxEdit, value); // this will send a command, which will update the variable.
-        }
-    }
-
-    void OnEditUpdate(HWND hWnd, DWORD id, HWND hEdit)
+    void OnEditUpdate(DWORD id, HWND hEdit)
     {
         size_t value = GetResourceEditValue(hEdit);
         if (id >= s_idEditsMax)
@@ -210,7 +188,7 @@ protected:
             size_t resource = id - s_idEditsMax;
             if (resource >= 0 && resource < Game::Resource::Max)
             {
-                SetResourceMax(hWnd, resource, value);
+                m_market.SetResourceMax(resource, value);
             }
         }
         else if (id >= s_idEditsMin)
@@ -218,7 +196,7 @@ protected:
             size_t resource = id - s_idEditsMin;
             if (resource >= 0 && resource < Game::Resource::Max)
             {
-                SetResourceMin(hWnd, resource, value);
+                m_market.SetResourceMin(resource, value);
             }
         }
     }
