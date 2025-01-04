@@ -52,16 +52,16 @@ void __cdecl SystemKeyCallback(ASM::HookRegisters registers)
     }
 }
 
-void __cdecl SetIngameStatusCallback(ASM::HookRegisters registers)
+void __cdecl SetIngameStatusCallback(ASM::HookRegisters)
 {
-    if (registers.edi) // is now ingame?
-    {
-        g_market.Reset();
-    }
-    else
-    {
-        g_market.Close();
-    }
+    g_market.Close();
+    g_market.Reset();
+}
+
+void __cdecl StartGameCallback(ASM::HookRegisters)
+{
+    g_market.Close();
+    g_market.Reset();
 }
 
 void __cdecl EscapeCallback(ASM::HookRegisters)
@@ -87,9 +87,11 @@ void Initialize()
 
     ASM::Hook((LPVOID)0x004B354D, 5, &EscapeCallback); // Triggered when hitting escape ingame. // 0x004B36BD
     ASM::Hook((LPVOID)0x0057C3B9, 6, &UpdateCallback); // Triggered after game loop (not every simulated day, but every tick). // 0x0057C7E9
-    ASM::Hook((LPVOID)0x00512438, 6, &SetIngameStatusCallback); // Triggered when starting or leaving a game. // 0x005127B8
     ASM::Hook((LPVOID)0x00468030, 5, &MouseCallback); // Triggered on mouse input. // 0x00468250
     ASM::Hook((LPVOID)0x004B480B, 8, &SystemKeyCallback); // 0x004B497B
+
+    ASM::Hook((LPVOID)0x00512438, 6, &SetIngameStatusCallback); // Triggered when leaving (or starting?) a game. // 0x005127B8
+    ASM::Hook((LPVOID)0x00474A20, 5, &StartGameCallback); // Triggered when starting a game.
 
     // Don't disable the market the pop-up for the player.
     {
