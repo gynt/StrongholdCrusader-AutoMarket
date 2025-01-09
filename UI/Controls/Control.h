@@ -46,6 +46,7 @@ public:
 	virtual void OnMouseEnter();
 	virtual void OnMouseLeave();
 	virtual void OnMouseDown(int x, int y);
+	virtual void OnMouseMove(int x, int y);
 	virtual void OnMouseUp(int x, int y);
 
 	virtual bool OnKeyDown(int key);

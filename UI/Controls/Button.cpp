@@ -127,6 +127,7 @@ void Button::OnMouseEnter()
 
 void Button::OnMouseLeave()
 {
+	m_isDown = false;
 	Redraw(); // Update hover effect.
 }
 
