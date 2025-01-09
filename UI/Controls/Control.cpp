@@ -178,6 +178,7 @@ bool Control::OnEvent(UINT uMsg, WPARAM wParam, LPARAM lParam)
                 TrackMouseEvent(&tme);
             }
         }
+        OnMouseMove(LOWORD(lParam), HIWORD(lParam));
         break;
     case WM_MOUSELEAVE:
         if (m_isHovered)
@@ -222,6 +223,10 @@ void Control::OnMouseLeave()
 }
 
 void Control::OnMouseDown(int x, int y)
+{
+}
+
+void Control::OnMouseMove(int x, int y)
 {
 }
 

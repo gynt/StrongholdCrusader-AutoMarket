@@ -6,9 +6,10 @@
 namespace UI
 {
 
-static constexpr RECT       s_defaultTextMargins = { 10, 5, 10, 5 };
-static constexpr COLORREF   s_defaultTextColor   = RGB(255, 255, 255);
-static UniqueObject<HBRUSH> const s_defaultCursorBrush = CreateSolidBrush(RGB(79, 123, 47));
+static constexpr RECT             s_defaultTextMargins    = { 10, 5, 10, 5 };
+static constexpr COLORREF         s_defaultTextColor      = RGB(255, 255, 255);
+static constexpr COLORREF         s_defaultSelectionColor = RGB(145, 155, 145);
+static UniqueObject<HBRUSH> const s_defaultCursorBrush    = CreateSolidBrush(RGB(79, 123, 47));
 
 Edit::Edit(std::wstring text, IMaterial const* background, RECT const& rect, HWND parent)
 	: Image(background, rect, parent)
@@ -16,7 +17,10 @@ Edit::Edit(std::wstring text, IMaterial const* background, RECT const& rect, HWN
 	, m_textMargins(s_defaultTextMargins)
 	, m_textColor(s_defaultTextColor)
 	, m_cursorBrush(s_defaultCursorBrush)
+	, m_charLimit(MAXSIZE_T)
 	, m_cursorPos(0)
+	, m_isDown(false)
+	, m_selectionStart()
 {
 }
 
@@ -43,12 +47,23 @@ void Edit::SetCursorBrush(HBRUSH brush)
 	Redraw();
 }
 
+void Edit::SetCharLimit(size_t limit)
+{
+	m_charLimit = limit;
+	if (limit < m_text.size())
+	{
+		m_text.erase(m_text.begin() + limit, m_text.end());
+		Redraw();
+	}
+}
+
 void Edit::OnPaint(HDC hdcDest, RECT const& rect) const
 {
 	// Draw background
 	Image::OnPaint(hdcDest, rect);
 
 	// Draw Text
+	bool hasSelection = m_selectionStart && *m_selectionStart != m_cursorPos;
 	RECT textRect = CalcTextRect();
 	{
 		RECT emptyRect{}; // for text height
@@ -65,12 +80,46 @@ void Edit::OnPaint(HDC hdcDest, RECT const& rect) const
 		};
 
 		::SetTextColor(hdcDest, m_textColor);
-		SetBkMode(hdcDest, TRANSPARENT);
-		DrawText(hdcDest, m_text.data(), m_text.size(), &drawRect, DT_SINGLELINE);
+		if (hasSelection) // Draw with selectionbox
+		{
+			SetBkColor(hdcDest, s_defaultSelectionColor);
+
+			size_t start = std::min(*m_selectionStart, m_cursorPos);
+			size_t end = std::max(*m_selectionStart, m_cursorPos);
+
+			if (start != 0)
+			{
+				SetBkMode(hdcDest, TRANSPARENT);
+				DrawText(hdcDest, m_text.data(), start, &drawRect, DT_SINGLELINE);
+
+				RECT temp = drawRect;
+				DrawText(hdcDest, m_text.data(), start, &temp, DT_SINGLELINE | DT_CALCRECT);
+				drawRect.left = temp.right;
+			}
+			if (end - start != 0)
+			{
+				SetBkMode(hdcDest, OPAQUE);
+				DrawText(hdcDest, m_text.data() + start, end - start, &drawRect, DT_SINGLELINE);
+
+				RECT temp = drawRect;
+				DrawText(hdcDest, m_text.data() + start, end - start, &temp, DT_SINGLELINE | DT_CALCRECT);
+				drawRect.left = temp.right;
+			}
+			if (m_text.size() - end != 0)
+			{
+				SetBkMode(hdcDest, TRANSPARENT);
+				DrawText(hdcDest, m_text.data() + end, m_text.size() - end, &drawRect, DT_SINGLELINE);
+			}
+		}
+		else
+		{
+			SetBkMode(hdcDest, TRANSPARENT);
+			DrawText(hdcDest, m_text.data(), m_text.size(), &drawRect, DT_SINGLELINE);
+		}
 	}
 
 	// Draw cursor
-	if (HasFocus() && m_cursorBrush)
+	if (!hasSelection && !m_isDown && HasFocus() && m_cursorBrush)
 	{
 		RECT cursorRect{};
 		DrawText(hdcDest, m_text.data(), m_cursorPos, &cursorRect, DT_SINGLELINE | DT_CALCRECT);
@@ -88,7 +137,38 @@ void Edit::OnPaint(HDC hdcDest, RECT const& rect) const
 void Edit::OnMouseDown(int x, int y)
 {
 	m_cursorPos = MouseToTextPos(x, y);
+	m_selectionStart = m_cursorPos;
+	m_isDown = true;
 
+	Redraw();
+}
+
+void Edit::OnMouseMove(int x, int y)
+{
+	if (m_isDown)
+	{
+		m_cursorPos = MouseToTextPos(x, y);
+		Redraw();
+	}
+}
+
+void Edit::OnMouseUp(int x, int y)
+{
+	m_isDown = false;
+	if (m_selectionStart && m_cursorPos == *m_selectionStart)
+	{
+		m_selectionStart = {}; // no selection
+	}
+	Redraw();
+}
+
+void Edit::OnMouseLeave()
+{
+	m_isDown = false;
+	if (m_selectionStart && m_cursorPos == *m_selectionStart)
+	{
+		m_selectionStart = {}; // no selection
+	}
 	Redraw();
 }
 
@@ -96,33 +176,32 @@ bool Edit::OnKeyDown(int key)
 {
 	switch (key)
 	{
-	case VK_ESCAPE:
-		return false; // Let the parent window handle this one.
 	case VK_LEFT:
-		if (m_cursorPos > 0)
+		if (!m_isDown)
 		{
-			--m_cursorPos;
+			MoveCursor(-1);
 		}
 		break;
 	case VK_RIGHT:
-		if (m_cursorPos < m_text.size())
+		if (!m_isDown)
 		{
-			++m_cursorPos;
+			MoveCursor(+1);
 		}
 		break;
 	case VK_DELETE:
-		if (m_cursorPos < m_text.size())
+		if (!m_isDown)
 		{
-			m_text.erase(m_text.begin() + m_cursorPos);
+			EraseChar();
 		}
 		break;
 	case VK_BACK:
-		if (m_cursorPos > 0)
+		if (!m_isDown && m_cursorPos > 0)
 		{
-			m_text.erase(m_text.begin() + (m_cursorPos - 1));
 			--m_cursorPos;
+			EraseChar();
 		}
 		break;
+	case VK_ESCAPE:
 	case VK_RETURN:
 	case VK_TAB:
 		GetControlManager().SetFocus(nullptr);
@@ -138,11 +217,7 @@ bool Edit::OnChar(int ch)
 {
 	if (!IsCharInvalid(ch))
 	{
-		m_text.insert(m_text.begin() + m_cursorPos, ch);
-		++m_cursorPos;
-
-		Redraw();
-
+		InsertChar(ch);
 		OnChanged();
 	}
 	return true;
@@ -157,6 +232,8 @@ void Edit::OnSetFocus()
 void Edit::OnLoseFocus()
 {
 	m_cursorPos = 0;
+	m_isDown = false;
+	m_selectionStart = {};
 	Redraw();
 }
 
@@ -213,6 +290,85 @@ size_t Edit::MouseToTextPos(int x, int y)
 		DeleteDC(hdc);
 	}
 	return result;
+}
+
+void Edit::EraseChar()
+{
+	size_t start, end;
+	if (m_selectionStart && *m_selectionStart != m_cursorPos)
+	{
+		start = std::min(*m_selectionStart, m_cursorPos);
+		end = std::max(*m_selectionStart, m_cursorPos);
+	}
+	else
+	{
+		if (m_cursorPos == m_text.size())
+		{
+			return;
+		}
+
+		start = m_cursorPos;
+		end = m_cursorPos + 1;
+	}
+
+	m_text.erase(m_text.begin() + start, m_text.begin() + end);
+	m_selectionStart = {};
+	m_cursorPos = start;
+
+	Redraw();
+}
+
+void Edit::InsertChar(int ch)
+{
+	if (m_selectionStart && *m_selectionStart != m_cursorPos)
+	{
+		EraseChar();
+	}
+	else if (m_text.size() == m_charLimit)
+	{
+		return;
+	}
+
+	m_text.insert(m_text.begin() + m_cursorPos, ch);
+	++m_cursorPos;
+
+	Redraw();
+}
+
+void Edit::MoveCursor(int dist)
+{
+	size_t newPos;
+	if (dist < 0)
+	{
+		if (m_cursorPos < (size_t)(-dist))
+		{
+			newPos = 0;
+		}
+		else
+		{
+			newPos = m_cursorPos + dist;
+		}
+	}
+	else
+	{
+		if (m_cursorPos + dist > m_text.size())
+		{
+			newPos = m_text.size();
+		}
+		else
+		{
+			newPos = m_cursorPos + dist;
+		}
+	}
+
+	if (newPos == m_cursorPos)
+	{
+		return;
+	}
+	m_cursorPos = newPos;
+	m_selectionStart = {};
+
+	Redraw();
 }
 
 }

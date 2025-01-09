@@ -193,6 +193,7 @@ void Window::CreateResourceControl(size_t resource, int x, int y, HWND parent)
         Resources::GetEditBackground(),
         { x, y, x + Style::resEditWidth, y + Style::resEditHeight },
         parent);
+    minEdit->SetCharLimit(5);
     minEdit->onValueChanged = [this, resource](unsigned int value) { m_market.SetResourceMin(resource, value); };
     
     x += Style::resEditWidth + Style::resEditDist;
@@ -201,6 +202,7 @@ void Window::CreateResourceControl(size_t resource, int x, int y, HWND parent)
         Resources::GetEditBackground(),
         { x, y, x + Style::resEditWidth, y + Style::resEditHeight },
         parent);
+    maxEdit->SetCharLimit(5);
     maxEdit->onValueChanged = [this, resource](unsigned int value) { m_market.SetResourceMax(resource, value); };
 }
 

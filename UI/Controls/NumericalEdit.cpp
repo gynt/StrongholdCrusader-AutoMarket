@@ -15,7 +15,7 @@ void UI::NumericalEdit::SetValue(unsigned int value)
 
 unsigned int NumericalEdit::GetValue() const
 {
-	return std::stoul(m_text);
+	return wcstoul(m_text.data(), nullptr, 10);
 }
 
 bool NumericalEdit::IsCharInvalid(int ch)
