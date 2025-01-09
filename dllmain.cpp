@@ -2,96 +2,73 @@
 
 #include "ASM/Hooks.h"
 #include "AutoMarket/AutoMarket.h"
+#include "UI/ControlManager.h"
+#include "Game/UI.h"
 #include "Game/Data.h"
 
 HMODULE g_module = NULL;
 
-AutoMarket::Manager g_market;
-
-static void ToggleAutoMarket()
+static bool    s_initialized{ false };
+static WNDPROC s_oldWndProc{ NULL };
+static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    if (g_market.IsOpened())
+    switch (uMsg)
     {
-        g_market.Close();
-    }
-    else
-    {
-        size_t playerIndex = *Game::playerIndex;
-        if (playerIndex && Game::status->isIngame && Game::playerData[playerIndex].hasMarket)
+    case WM_SYSKEYDOWN:        
+        if (Game::playerIndex && Game::status->isIngame &&
+            Game::input->altModifier && wParam == 'M')
         {
-            g_market.Open();
+            AutoMarket::ToggleUI();
         }
+        break;
+    default:
+        break;
     }
-}
 
-void __cdecl UpdateCallback(ASM::HookRegisters)
-{
-    size_t playerIndex = *Game::playerIndex;
-    if (playerIndex &&
-        Game::status->isIngame &&
-        !Game::status->isPaused &&
-        Game::playerData[playerIndex].hasMarket)
+    if (UI::ControlManager::Get().WndProc(hWnd, uMsg, wParam, lParam))
     {
-        size_t const time = Game::status->ingameTime;
-        g_market.Update(time);
+        return TRUE;
     }
+
+    return CallWindowProc(s_oldWndProc, hWnd, uMsg, wParam, lParam);
 }
 
-void __cdecl SystemKeyCallback(ASM::HookRegisters registers)
+static void Register()
 {
-    if (Game::input->altModifier)
+    if (!s_initialized)
     {
-        switch (registers.esi)
-        {
-        case 'M':
-            ToggleAutoMarket();
-            break;
-        default:
-            break;
-        }
+        s_initialized = true;
+        s_oldWndProc = (WNDPROC)SetWindowLongPtr(*Game::UI::hWindow, GWLP_WNDPROC, (LONG_PTR)&WndProc);
     }
 }
 
-void __cdecl SetIngameStatusCallback(ASM::HookRegisters)
+static void Deregister()
 {
-    g_market.Close();
-    g_market.Reset();
-}
-
-void __cdecl StartGameCallback(ASM::HookRegisters)
-{
-    g_market.Close();
-    g_market.Reset();
-}
-
-void __cdecl EscapeCallback(ASM::HookRegisters)
-{
-    g_market.Close();
-}
-
-void __cdecl MouseCallback(ASM::HookRegisters registers)
-{
-    int const* args = ((int const*)registers.esp) + 1;
-    //short const x = args[0];
-    //short const y = args[1];
-    int const type = args[2];
-    if (type >= 1 && type <= 6)  // Mouse button was pressed?
+    if (s_initialized)
     {
-        g_market.Close();
+        SetWindowLongPtr(*Game::UI::hWindow, GWLP_WNDPROC, (LONG_PTR)s_oldWndProc);
     }
 }
 
-void Initialize()
+static void __cdecl UpdateGameCallback(ASM::HookRegisters)
+{
+    AutoMarket::Update();
+}
+
+static void __cdecl EnterLeaveGameCallback(ASM::HookRegisters)
+{
+    Register(); // Do late registering.
+
+    AutoMarket::Reset();
+}
+
+static void InitializeHooks()
 {
     HANDLE const hProcess = GetCurrentProcess();
 
-    ASM::Hook((LPVOID)0x004B354D, 5, &EscapeCallback); // Triggered when hitting escape ingame. // 0x004B36BD
-    ASM::Hook((LPVOID)0x0057C3B9, 6, &UpdateCallback); // Triggered after game loop (not every simulated day, but every tick). // 0x0057C7E9
-    ASM::Hook((LPVOID)0x00468030, 5, &MouseCallback); // Triggered on mouse input. // 0x00468250
-    ASM::Hook((LPVOID)0x004B480B, 8, &SystemKeyCallback); // 0x004B497B
-
-    ASM::Hook((LPVOID)0x00512438, 6, &SetIngameStatusCallback); // Triggered when leaving (or starting?) a game. // 0x005127B8
-    ASM::Hook((LPVOID)0x00474A20, 5, &StartGameCallback); // Triggered when starting a game.
+    ASM::Hook((LPVOID)0x0057C3B9, 6, &UpdateGameCallback); // Triggered after game loop (not every simulated day, but every tick). // 0x0057C7E9
+    ASM::Hook((LPVOID)0x00512438, 6, &EnterLeaveGameCallback); // Triggered when leaving (or starting?) a game. // 0x005127B8
+    ASM::Hook((LPVOID)0x00474A20, 5, &EnterLeaveGameCallback); // Triggered when starting a game.
 
     // Don't disable the market the pop-up for the player.
     {
@@ -99,10 +76,7 @@ void Initialize()
         char lpBuffer[] = { '\x90', '\x90', '\x90', '\x90', '\x90', '\x90' };
         WriteProcessMemory(hProcess, (LPVOID)0x0040A07D, lpBuffer, sizeof(lpBuffer), &lpNumberOfBytesWritten); // 0x0040A08D
     }
-
-    g_market.Load();
 }
-
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
 {
@@ -110,9 +84,14 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
     {
     case DLL_PROCESS_ATTACH:
         g_module = hModule;
-        Initialize();
+        InitializeHooks();
+        if (Game::status->isIngame)
+        {
+            Register(); // Otherwise, we do late registering.
+        }
         break;
     case DLL_PROCESS_DETACH:
+        Deregister();
         break;
     }
     return TRUE;
