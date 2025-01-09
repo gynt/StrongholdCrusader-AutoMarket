@@ -112,7 +112,6 @@
     <ClInclude Include="UI\UniqueObject.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Asm\Hooks.cpp" />
     <ClCompile Include="AutoMarket\Manager.cpp" />
     <ClCompile Include="AutoMarket\AutoMarket.cpp" />
     <ClCompile Include="AutoMarket\Resources.cpp" />

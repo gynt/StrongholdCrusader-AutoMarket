@@ -37,7 +37,7 @@ static HWND ConstructWindow(Control& control, RECT const& rect, HWND parent)
         WNDCLASS wc = { 0 };
         wc.style = CS_HREDRAW | CS_VREDRAW;
         wc.lpszClassName = s_className;
-        wc.hInstance = Game::UI::GetInstance();
+        wc.hInstance = (HINSTANCE)GetWindowLongPtr(*Game::UI::hWindow, GWLP_HINSTANCE);
         wc.lpfnWndProc = WndProc;
         wc.hCursor = NULL;
         if (!RegisterClass(&wc))

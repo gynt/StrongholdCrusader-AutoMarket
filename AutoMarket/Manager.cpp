@@ -248,8 +248,9 @@ void Manager::Save()
     }
     j["Resources"] = std::move(resources);
 
-    std::ofstream f("automarket.json");
-    f << std::setw(3) << j << std::endl;
+    // TODO: handle json saving with ucp3 backend
+    //std::ofstream f("automarket.json");
+    //f << std::setw(3) << j << std::endl;
 }
 
 template<typename T, typename TDefault>
@@ -269,8 +270,16 @@ void Manager::Load()
 {
     json j;
     {
-        std::ifstream f("automarket.json");
-        f >> j;
+
+        // TODO: handle json loading with ucp3 backend
+        //try {
+        //    std::ifstream f("automarket.json");
+        //    f >> j;
+        //}
+        //catch {
+        //   ucp_log(ucp_verbosity::WARNING, "invalid automarket.json file")
+        //}
+
     }
 
     TryLoadJson(m_interval, j, "Interval", Defaults::Interval);

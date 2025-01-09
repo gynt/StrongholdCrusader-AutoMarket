@@ -57,12 +57,6 @@ static void Deregister()
 
 std::string fileName = "ucp-automarket.json";
 
-void Initialize()
-{
-    //HANDLE const hProcess = GetCurrentProcess();
-    g_market.Load(fileName);
-}
-
 static void __cdecl UpdateGameCallback(ASM::HookRegisters)
 {
     AutoMarket::Update();
@@ -70,26 +64,11 @@ static void __cdecl UpdateGameCallback(ASM::HookRegisters)
 
 static void __cdecl EnterLeaveGameCallback(ASM::HookRegisters)
 {
+    ucp_log(ucp_NamedVerbosity::Verbosity_1, "EnterLeavegameCallback");
+
     Register(); // Do late registering.
 
     AutoMarket::Reset();
-}
-
-static void InitializeHooks()
-{
-    HANDLE const hProcess = GetCurrentProcess();
-
-    ASM::Hook((LPVOID)0x0057C3B9, 6, &UpdateGameCallback); // Triggered after game loop (not every simulated day, but every tick). // 0x0057C7E9
-    ASM::Hook((LPVOID)0x00512438, 6, &EnterLeaveGameCallback); // Triggered when leaving (or starting?) a game. // 0x005127B8
-    ASM::Hook((LPVOID)0x00474A20, 5, &EnterLeaveGameCallback); // Triggered when starting a game.
-
-    // Don't disable the market the pop-up for the player.
-    {
-        SIZE_T lpNumberOfBytesWritten;
-        char lpBuffer[] = { '\x90', '\x90', '\x90', '\x90', '\x90', '\x90' };
-        WriteProcessMemory(hProcess, (LPVOID)0x0040A07D, lpBuffer, sizeof(lpBuffer), &lpNumberOfBytesWritten); // 0x0040A08D
-    }
-
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
@@ -98,12 +77,6 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
     {
     case DLL_PROCESS_ATTACH:
         g_module = hModule;
-
-        InitializeHooks();
-        if (Game::status->isIngame)
-        {
-            Register(); // Otherwise, we do late registering.
-        }
 
         break;
     case DLL_PROCESS_DETACH:
@@ -247,20 +220,11 @@ int luaSetAddresses(lua_State* L) {
 int luaGetAddresses(lua_State* L) {
     lua_createtable(L, 0, 0);
 
-    lua_pushinteger(L, (DWORD) & EscapeCallback);
-    lua_setfield(L, -2, "EscapeCallback");
+    lua_pushinteger(L, (DWORD) & UpdateGameCallback);
+    lua_setfield(L, -2, "UpdateGameCallback");
 
-    lua_pushinteger(L, (DWORD)&UpdateCallback);
-    lua_setfield(L, -2, "UpdateCallback"); // Triggered after game loop (not every simulated day, but every tick).
-
-    lua_pushinteger(L, (DWORD)&SetIngameStatusCallback);
-    lua_setfield(L, -2, "SetIngameStatusCallback"); // Triggered when starting or leaving a game.
-
-    lua_pushinteger(L, (DWORD)&MouseCallback);
-    lua_setfield(L, -2, "MouseCallback"); // Triggered on mouse input.
-
-    lua_pushinteger(L, (DWORD)&SystemKeyCallback);
-    lua_setfield(L, -2, "SystemKeyCallback");
+    lua_pushinteger(L, (DWORD)&EnterLeaveGameCallback);
+    lua_setfield(L, -2, "EnterLeaveGameCallback");
 
     return 1;
 }
@@ -270,7 +234,13 @@ bool initialized = false;
 
 int luaInitialize(lua_State* L) {
     if (!initialized) {
-        Initialize();
+        // Do work here
+
+        if (Game::status->isIngame)
+        {
+            Register(); // Otherwise, we do late registering.
+        }
+
         initialized = true;
     }
     else {

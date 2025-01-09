@@ -96,11 +96,10 @@ local function findAddresses()
     u1 = u1,
     hWindow = hWindow,
     -- Functions
-    Escape = { address = core.AOBScan("A1 ? ? ? ? 3B C5 74 C1"), size = 5, to = nil},
-    Update = { address = core.AOBScan("39 ? ? ? ? ? 74 15 FF D7"), size = 6, to = nil},
-    SetIngameStatus = {address = 13 + core.AOBScan("6A 64 57 B9 ? ? ? ? E8 ? ? ? ? 89 ? ? ? ? ?"), size = 6, to = nil},
-    Mouse = {address = core.AOBScan("66 8B 44 24 04 66 8B 54 24 08"), size = 5, to = nil},
-    SystemKey = {address = core.AOBScan("8D 46 F3 3D D1 00 00 00"), size = 8, to = nil},
+    -- Hopefully this Leave Game is a better place to do this code.
+    LeaveGame = { address = core.AOBScan("8B 44 24 04 83 E8 16"), size = 7, to = nil},
+    EnterGame = { address = core.AOBScan("55 8B EC 83 E4 F8 81 EC 84 0D 00 00"), size = 6, to = nil},
+    UpdateGame = { address = core.AOBScan("39 ? ? ? ? ? 74 15 FF D7"), size = 6, to = nil},
   }
 end
 
@@ -135,11 +134,11 @@ return {
       -- Do hooks now here
       local dllAddresses = dll.getAddresses()
 
-      hook(addresses.Escape.address, addresses.Escape.size, dllAddresses.EscapeCallback, addresses.Escape.to)
-      hook(addresses.Update.address, addresses.Update.size, dllAddresses.UpdateCallback, addresses.Update.to)
-      hook(addresses.SetIngameStatus.address, addresses.SetIngameStatus.size, dllAddresses.SetIngameStatusCallback, addresses.SetIngameStatus.to)
-      hook(addresses.Mouse.address, addresses.Mouse.size, dllAddresses.MouseCallback, addresses.Mouse.to)
-      hook(addresses.SystemKey.address, addresses.SystemKey.size, dllAddresses.SystemKeyCallback, addresses.SystemKey.to)
+      hook(addresses.UpdateGame.address, addresses.UpdateGame.size, dllAddresses.UpdateGameCallback, addresses.UpdateGame.to)
+      hook(addresses.LeaveGame.address, addresses.LeaveGame.size, dllAddresses.EnterLeaveGameCallback, addresses.LeaveGame.to)
+      hook(addresses.EnterGame.address, addresses.EnterGame.size, dllAddresses.EnterLeaveGameCallback, addresses.EnterGame.to)
+      
+      -- TODO: check same with master
       core.writeCode(core.AOBScan("0F ? ? ? ? ? 0F BF 86 E6 00 00 00"), {0x90, 0x90, 0x90, 0x90, 0x90, 0x90, })
 
       if dll.initialize() == false then
