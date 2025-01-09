@@ -111,6 +111,7 @@ public:
 
         x = Style::controlDist;
         CreateEnableButton(m_market, x, y, Style::btnWidth, Style::btnHeight, hWnd, s_idBtnEnable);
+
         x = Style::windowWidth - Style::controlDist - Style::btnWidth;
         CreateButton(L"Exit", x, y, Style::btnWidth, Style::btnHeight, hWnd, s_idBtnExit);
     }
@@ -124,7 +125,7 @@ public:
             break;
         case EN_CHANGE:
         case EN_UPDATE:
-            OnEditUpdate(hWnd, LOWORD(wParam), (HWND)lParam);
+            OnEditUpdate(LOWORD(wParam), (HWND)lParam);
             break;
         default:
             break;
@@ -149,6 +150,21 @@ public:
 
         SelectObject(hdcMem, s_background);
         StretchBlt(hdc, 0, 0, rect.right - rect.left, rect.bottom - rect.top, hdcMem, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY);
+
+        {
+            SetBkMode(hdc, TRANSPARENT);
+
+            int x = Style::controlDist + Style::btnWidth + Style::controlDist;
+            int y = Style::windowHeight - Style::controlDist - Style::btnHeight;
+            int w = Style::btnWidth * 2;
+            int h = Style::btnHeight;
+            rect = { x, y, x + w, y + h };
+
+            wchar_t buf[128];
+            int len = swprintf_s(buf, L"Fee: %d %%", m_market.GetFee());
+
+            DrawText(hdc, buf, len, &rect, DT_LEFT | DT_VCENTER | DT_SINGLELINE);
+        }
 
         DeleteDC(hdcMem);
         EndPaint(hWnd, &ps);
@@ -185,29 +201,7 @@ protected:
         CreateResourceEdit(m_market.GetResourceMax(resource), m_market, x, y, Style::resEditWidth, Style::resEditHeight, hParent, s_idEditsMax + resource);
     }
 
-    void SetResourceMax(HWND hWnd, size_t resource, size_t value)
-    {
-        m_market.SetResourceMax(resource, value);
-        if (value < m_market.GetResourceMin(resource))
-        {
-            // Also set the min value in this case.
-            HWND hMinEdit = FindChildWindowById(hWnd, (HMENU)(s_idEditsMin + resource));
-            SetResourceEditValue(hMinEdit, value); // this will send a command, which will update the variable.
-        }
-    }
-
-    void SetResourceMin(HWND hWnd, size_t resource, size_t value)
-    {
-        m_market.SetResourceMin(resource, value);
-        if (value > m_market.GetResourceMax(resource))
-        {
-            // Also set the max value in this case.
-            HWND hMaxEdit = FindChildWindowById(hWnd, (HMENU)(s_idEditsMax + resource));
-            SetResourceEditValue(hMaxEdit, value); // this will send a command, which will update the variable.
-        }
-    }
-
-    void OnEditUpdate(HWND hWnd, DWORD id, HWND hEdit)
+    void OnEditUpdate(DWORD id, HWND hEdit)
     {
         size_t value = GetResourceEditValue(hEdit);
         if (id >= s_idEditsMax)
@@ -215,7 +209,7 @@ protected:
             size_t resource = id - s_idEditsMax;
             if (resource >= 0 && resource < Game::Resource::Max)
             {
-                SetResourceMax(hWnd, resource, value);
+                m_market.SetResourceMax(resource, value);
             }
         }
         else if (id >= s_idEditsMin)
@@ -223,7 +217,7 @@ protected:
             size_t resource = id - s_idEditsMin;
             if (resource >= 0 && resource < Game::Resource::Max)
             {
-                SetResourceMin(hWnd, resource, value);
+                m_market.SetResourceMin(resource, value);
             }
         }
     }

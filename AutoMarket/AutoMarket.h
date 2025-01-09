@@ -40,6 +40,10 @@ public:
     size_t GetResourceMin(size_t resource) const;
     size_t GetResourceMax(size_t resource) const;
 
+    size_t GetFee() const         { return m_fee; }
+    size_t GetInterval() const    { return m_interval; }
+    size_t GetAmountLimit() const { return m_amountLimit; }
+
     void   Save();
     void   Load(const std::string& file);
 

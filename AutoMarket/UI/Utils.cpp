@@ -1,6 +1,10 @@
 #include "pch.h"
 #include "AutoMarket/UI/Utils.h"
 
+#define NOMINMAX
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
 namespace AutoMarket::UI
 {
 
@@ -36,30 +40,6 @@ HBITMAP CreateBitmapMask(HBITMAP hbmColour, COLORREF crTransparent)
     DeleteDC(hdcMem);
     DeleteDC(hdcMem2);
     return hbmMask;
-}
-
-struct FindChildWindowByIdParams
-{
-    HMENU id;
-    HWND  out;
-};
-
-static BOOL CALLBACK FindChildWindowByIdCallback(HWND hWnd, LPARAM lParam)
-{
-    FindChildWindowByIdParams& params = *(FindChildWindowByIdParams*)lParam;
-    if (GetMenu(hWnd) == params.id)
-    {
-        params.out = hWnd;
-        return FALSE;
-    }
-    return TRUE;
-}
-
-HWND FindChildWindowById(HWND hParent, HMENU id)
-{
-    FindChildWindowByIdParams params{ id, NULL };
-    EnumChildWindows(hParent, FindChildWindowByIdCallback, (LPARAM)&params);
-    return params.out;
 }
 
 }

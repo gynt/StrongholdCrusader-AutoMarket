@@ -31,9 +31,11 @@ static void ToggleAutoMarket()
 
 void __cdecl UpdateCallback(ASM::HookRegisters)
 {
-    if (Game::status->isIngame &&
+    size_t playerIndex = *Game::playerIndex;
+    if (playerIndex &&
+        Game::status->isIngame &&
         !Game::status->isPaused &&
-        *Game::playerIndex)
+        Game::playerData[playerIndex].hasMarket)
     {
         size_t const time = Game::status->ingameTime;
         g_market.Update(time);
@@ -55,16 +57,16 @@ void __cdecl SystemKeyCallback(ASM::HookRegisters registers)
     }
 }
 
-void __cdecl SetIngameStatusCallback(ASM::HookRegisters registers)
+void __cdecl SetIngameStatusCallback(ASM::HookRegisters)
 {
-    if (registers.edi) // is now ingame?
-    {
-        g_market.Reset();
-    }
-    else
-    {
-        g_market.Close();
-    }
+    g_market.Close();
+    g_market.Reset();
+}
+
+void __cdecl StartGameCallback(ASM::HookRegisters)
+{
+    g_market.Close();
+    g_market.Reset();
 }
 
 void __cdecl EscapeCallback(ASM::HookRegisters)
