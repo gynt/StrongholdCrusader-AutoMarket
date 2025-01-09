@@ -15,10 +15,23 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     switch (uMsg)
     {
     case WM_SYSKEYDOWN:        
-        if (Game::playerIndex && Game::status->isIngame &&
-            Game::input->altModifier && wParam == 'M')
+        if (wParam == 'M' && Game::input->altModifier && AutoMarket::ToggleUI())
         {
-            AutoMarket::ToggleUI();
+            return TRUE;
+        }
+        break;
+    case WM_KEYDOWN:
+        if (wParam == VK_ESCAPE && AutoMarket::CloseUI())
+        {
+            return TRUE;
+        }
+        break;
+    case WM_LBUTTONDOWN:
+    case WM_RBUTTONDOWN:
+    case WM_MBUTTONDOWN:
+        if (AutoMarket::CloseUI())
+        {
+            return TRUE;
         }
         break;
     default:

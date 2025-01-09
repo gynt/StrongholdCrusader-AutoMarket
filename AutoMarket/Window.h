@@ -21,14 +21,8 @@ public:
 	std::function<void()> onExit;
 
 protected:
-	virtual bool OnKeyDown(int key) override;
-
 	void CreateControls();
 	void CreateResourceControl(size_t resource, int x, int y, HWND parent);
-	void Close() const;
-
-	void RegisterFocusListener();
-	void DeregisterFocusListener();
 
 protected:
 	Manager& m_market;

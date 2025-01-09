@@ -22,44 +22,46 @@ Manager& GetManager()
     return *s_manager.get();
 }
 
-void OpenUI()
+bool OpenUI()
 {
     if (s_ui)
     {
-        return;
+        return false;
     }
 
     size_t playerIndex = *Game::playerIndex;
     if (!playerIndex || !Game::status->isIngame || !Game::playerData[playerIndex].hasMarket)
     {
-        return;
+        return false;
     }
 
     UI::ControlManager& controlManager = Window::GetControlManager();
     s_ui = new Window(GetManager(), controlManager.GetMainWindow());
     s_ui->onExit = []() { GetManager().Save(); };
     controlManager.SetFocus(s_ui.Get());
+    return true;
 }
 
-void CloseUI()
+bool CloseUI()
 {
     if (!s_ui)
     {
-        return;
+        return false;
     }
 
     delete s_ui.Get();
+    return true;
 }
 
-void ToggleUI()
+bool ToggleUI()
 {
     if (s_ui)
     {
-        CloseUI();
+        return CloseUI();
     }
     else
     {
-        OpenUI();
+        return OpenUI();
     }
 }
 

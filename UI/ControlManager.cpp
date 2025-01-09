@@ -63,11 +63,6 @@ void ControlManager::SetFocus(Control* control)
     {
         control->OnSetFocus();
     }
-
-    if (onChangeFocus)
-    {
-        onChangeFocus(control);
-    }
 }
 
 bool ControlManager::OnKeyDown(int key)

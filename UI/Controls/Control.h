@@ -26,7 +26,7 @@ public:
 	static ControlManager& GetControlManager();
 
 	Control(RECT const& rect, HWND parent = NULL);
-	~Control();
+	virtual ~Control();
 
 	RECT GetRect() const;
 	RECT GetLocalRect() const;
