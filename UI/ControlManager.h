@@ -1,7 +1,6 @@
 #pragma once
 
 #include <windef.h>
-#include <functional>
 
 namespace UI
 {
@@ -21,8 +20,6 @@ public:
 
 	void     SetFocus(Control* control);
 	Control* GetFocus() const { return m_focus; }
-
-	std::function<void(Control*)> onChangeFocus;
 
 private:
 	bool OnKeyDown(int key);

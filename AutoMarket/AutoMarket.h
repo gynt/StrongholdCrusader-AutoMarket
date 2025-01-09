@@ -11,8 +11,8 @@ Manager& GetManager();
 void     Reset();
 void     Update();
 
-void     OpenUI();
-void     CloseUI();
-void     ToggleUI();
+bool     OpenUI();
+bool     CloseUI();
+bool     ToggleUI();
 
 }

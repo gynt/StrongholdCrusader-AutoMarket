@@ -40,12 +40,6 @@ namespace Style
     static constexpr int windowHeight = upperRowHeight + resRectHeight + lowerRowHeight + 2 * controlDist + 2 * yFrame;
 }
 
-static bool IsExitKey(int key)
-{
-    static constexpr int s_exitKeys[] = { VK_ESCAPE, VK_RETURN, 'M' };
-    return std::find(std::begin(s_exitKeys), std::end(s_exitKeys), key) != std::end(s_exitKeys);
-}
-
 static RECT GetAutoMarketRect(HWND parent)
 {
     RECT winSize;
@@ -60,22 +54,14 @@ Window::Window(Manager& market, HWND parent)
     , m_market(market)
 {
     CreateControls();
-    RegisterFocusListener();
 }
 
 Window::~Window()
 {
-    DeregisterFocusListener();
-}
-
-bool Window::OnKeyDown(int key)
-{
-    if (IsExitKey(key))
+    if (onExit)
     {
-        Close();
-        return true;
+        onExit();
     }
-    return false;
 }
 
 void Window::CreateControls()
@@ -98,7 +84,7 @@ void Window::CreateControls()
         int x = Style::windowWidth - Style::xFrame - Style::exitBtnSize;
         RECT rect{ x, y, x + Style::exitBtnSize, y + Style::exitBtnSize };
         UI::Button* btnExit = new UI::Button(Resources::GetExitButton(), rect, self);
-        btnExit->onClick = [this](bool) { Close(); };
+        btnExit->onClick = [this](bool) { delete this; };
     }
 
     // Resource Rect
@@ -216,32 +202,6 @@ void Window::CreateResourceControl(size_t resource, int x, int y, HWND parent)
         { x, y, x + Style::resEditWidth, y + Style::resEditHeight },
         parent);
     maxEdit->onValueChanged = [this, resource](unsigned int value) { m_market.SetResourceMax(resource, value); };
-}
-
-void Window::Close() const
-{
-    if (onExit)
-    {
-        onExit();
-    }
-    delete this;
-}
-
-void Window::RegisterFocusListener()
-{
-    // We want to be notified, when the focus is changed, because we want to exit on e.g. oob clicks.
-    GetControlManager().onChangeFocus = [this](Control* control)
-        {
-            if (!control || (control != this && !control->IsDescendant(*this)))
-            {
-                Close();
-            }
-        };
-}
-
-void Window::DeregisterFocusListener()
-{
-    GetControlManager().onChangeFocus = {};
 }
 
 }
