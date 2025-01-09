@@ -53,7 +53,6 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>.;..\json-develop\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -66,15 +65,14 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;CRUSADERAUTOMARKET_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <Optimization>MaxSpeed</Optimization>
       <AdditionalIncludeDirectories>.;..\json-develop\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -87,28 +85,38 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ASM\Hooks.h" />
+    <ClInclude Include="Asm\Writer.h" />
+    <ClInclude Include="AutoMarket\Manager.h" />
     <ClInclude Include="AutoMarket\AutoMarket.h" />
-    <ClInclude Include="AutoMarket\UI.h" />
-    <ClInclude Include="AutoMarket\UI\Button.h" />
-    <ClInclude Include="AutoMarket\UI\EnableButton.h" />
-    <ClInclude Include="AutoMarket\UI\ResourceButton.h" />
-    <ClInclude Include="AutoMarket\UI\ResourceEdit.h" />
-    <ClInclude Include="AutoMarket\UI\Utils.h" />
+    <ClInclude Include="AutoMarket\Resources.h" />
+    <ClInclude Include="AutoMarket\Window.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Game\Data.h" />
     <ClInclude Include="Game\Resources.h" />
     <ClInclude Include="Game\UI.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="UI\ControlManager.h" />
+    <ClInclude Include="UI\ControlPointer.h" />
+    <ClInclude Include="UI\Controls\Button.h" />
+    <ClInclude Include="UI\Controls\Control.h" />
+    <ClInclude Include="UI\Controls\Edit.h" />
+    <ClInclude Include="UI\Controls\Image.h" />
+    <ClInclude Include="UI\Controls\Label.h" />
+    <ClInclude Include="UI\Controls\NumericalEdit.h" />
+    <ClInclude Include="UI\Materials\IMaterial.h" />
+    <ClInclude Include="UI\Materials\Material.h" />
+    <ClInclude Include="UI\Materials\MaterialStack.h" />
+    <ClInclude Include="UI\Materials\TiledMaterial.h" />
+    <ClInclude Include="UI\Materials\Utils.h" />
+    <ClInclude Include="UI\UniqueObject.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Asm\Hooks.cpp" />
+    <ClCompile Include="AutoMarket\Manager.cpp" />
     <ClCompile Include="AutoMarket\AutoMarket.cpp" />
-    <ClCompile Include="AutoMarket\UI.cpp" />
-    <ClCompile Include="AutoMarket\UI\Button.cpp" />
-    <ClCompile Include="AutoMarket\UI\EnableButton.cpp" />
-    <ClCompile Include="AutoMarket\UI\ResourceButton.cpp" />
-    <ClCompile Include="AutoMarket\UI\ResourceEdit.cpp" />
-    <ClCompile Include="AutoMarket\UI\Utils.cpp" />
+    <ClCompile Include="AutoMarket\Resources.cpp" />
+    <ClCompile Include="AutoMarket\Window.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Game\Data.cpp" />
     <ClCompile Include="Game\Game-UI.cpp" />
@@ -116,12 +124,26 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="UI\ControlManager.cpp" />
+    <ClCompile Include="UI\Controls\Button.cpp" />
+    <ClCompile Include="UI\Controls\Control.cpp" />
+    <ClCompile Include="UI\Controls\Edit.cpp" />
+    <ClCompile Include="UI\Controls\Image.cpp" />
+    <ClCompile Include="UI\Controls\Label.cpp" />
+    <ClCompile Include="UI\Controls\NumericalEdit.cpp" />
+    <ClCompile Include="UI\Materials\Material.cpp" />
+    <ClCompile Include="UI\Materials\TiledMaterial.cpp" />
+    <ClCompile Include="UI\Materials\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CrusaderAutoMarket.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\background.bmp" />
+    <Image Include="Resources\button.bmp" />
+    <Image Include="Resources\buttonMask.bmp" />
+    <Image Include="Resources\editbox.bmp" />
+    <Image Include="Resources\exitbutton.bmp" />
     <Image Include="Resources\items.bmp" />
   </ItemGroup>
   <ItemGroup>

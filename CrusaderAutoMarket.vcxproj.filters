@@ -11,11 +11,17 @@
     <Filter Include="AutoMarket">
       <UniqueIdentifier>{35a64074-22a0-4fd6-ba9a-dc0fb4abd2a3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="AutoMarket\UI">
-      <UniqueIdentifier>{e430cb4b-eb49-4ab0-af28-a347b872bfb3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ASM">
       <UniqueIdentifier>{48f3b8a4-decc-4f0e-b588-38e0f81bdc1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{fabd2d43-b4ad-4743-a792-6fe5fd42967b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Materials">
+      <UniqueIdentifier>{ce8c5e31-eba3-4270-a059-975778ad31d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Controls">
+      <UniqueIdentifier>{3790f4e8-2ffb-4956-aead-8580468cf16e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -26,9 +32,6 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="AutoMarket\AutoMarket.h">
-      <Filter>AutoMarket</Filter>
-    </ClInclude>
-    <ClInclude Include="AutoMarket\UI.h">
       <Filter>AutoMarket</Filter>
     </ClInclude>
     <ClInclude Include="framework.h" />
@@ -43,27 +46,57 @@
     <ClInclude Include="Game\UI.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="AutoMarket\UI\ResourceButton.h">
-      <Filter>AutoMarket\UI</Filter>
+    <ClInclude Include="UI\ControlManager.h">
+      <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="AutoMarket\UI\Utils.h">
-      <Filter>AutoMarket\UI</Filter>
+    <ClInclude Include="AutoMarket\Window.h">
+      <Filter>AutoMarket</Filter>
     </ClInclude>
-    <ClInclude Include="AutoMarket\UI\EnableButton.h">
-      <Filter>AutoMarket\UI</Filter>
+    <ClInclude Include="UI\ControlPointer.h">
+      <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="AutoMarket\UI\Button.h">
-      <Filter>AutoMarket\UI</Filter>
+    <ClInclude Include="AutoMarket\Resources.h">
+      <Filter>AutoMarket</Filter>
     </ClInclude>
-    <ClInclude Include="AutoMarket\UI\ResourceEdit.h">
-      <Filter>AutoMarket\UI</Filter>
+    <ClInclude Include="UI\Materials\Utils.h">
+      <Filter>UI\Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Materials\Material.h">
+      <Filter>UI\Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Materials\MaterialStack.h">
+      <Filter>UI\Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Materials\TiledMaterial.h">
+      <Filter>UI\Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Materials\IMaterial.h">
+      <Filter>UI\Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\UniqueObject.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Controls\Image.h">
+      <Filter>UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Controls\Button.h">
+      <Filter>UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Controls\Label.h">
+      <Filter>UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Controls\NumericalEdit.h">
+      <Filter>UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Controls\Edit.h">
+      <Filter>UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Controls\Control.h">
+      <Filter>UI\Controls</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AutoMarket\AutoMarket.cpp">
-      <Filter>AutoMarket</Filter>
-    </ClCompile>
-    <ClCompile Include="AutoMarket\UI.cpp">
       <Filter>AutoMarket</Filter>
     </ClCompile>
     <ClCompile Include="dllmain.cpp" />
@@ -71,20 +104,41 @@
     <ClCompile Include="Asm\Hooks.cpp">
       <Filter>ASM</Filter>
     </ClCompile>
-    <ClCompile Include="AutoMarket\UI\ResourceButton.cpp">
-      <Filter>AutoMarket\UI</Filter>
+    <ClCompile Include="UI\ControlManager.cpp">
+      <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="AutoMarket\UI\Utils.cpp">
-      <Filter>AutoMarket\UI</Filter>
+    <ClCompile Include="AutoMarket\Window.cpp">
+      <Filter>AutoMarket</Filter>
     </ClCompile>
-    <ClCompile Include="AutoMarket\UI\EnableButton.cpp">
-      <Filter>AutoMarket\UI</Filter>
+    <ClCompile Include="AutoMarket\Resources.cpp">
+      <Filter>AutoMarket</Filter>
     </ClCompile>
-    <ClCompile Include="AutoMarket\UI\Button.cpp">
-      <Filter>AutoMarket\UI</Filter>
+    <ClCompile Include="UI\Materials\Utils.cpp">
+      <Filter>UI\Materials</Filter>
     </ClCompile>
-    <ClCompile Include="AutoMarket\UI\ResourceEdit.cpp">
-      <Filter>AutoMarket\UI</Filter>
+    <ClCompile Include="UI\Materials\Material.cpp">
+      <Filter>UI\Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Materials\TiledMaterial.cpp">
+      <Filter>UI\Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Controls\Edit.cpp">
+      <Filter>UI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Controls\Label.cpp">
+      <Filter>UI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Controls\NumericalEdit.cpp">
+      <Filter>UI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Controls\Button.cpp">
+      <Filter>UI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Controls\Image.cpp">
+      <Filter>UI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Controls\Control.cpp">
+      <Filter>UI\Controls</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -97,6 +151,18 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Resources\items.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\editbox.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\exitbutton.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\button.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\buttonMask.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
