@@ -98,7 +98,8 @@ local function findAddresses()
     -- Functions
     -- Hopefully this Leave Game is a better place to do this code.
     LeaveGame = { address = core.AOBScan("8B 44 24 04 83 E8 16"), size = 7, to = nil},
-    EnterGame = { address = core.AOBScan("55 8B EC 83 E4 F8 81 EC 84 0D 00 00"), size = 6, to = nil},
+    -- This AOB is not exactly at the start of the function because it is different in Extreme
+    EnterGame = { address = core.AOBScan("8B F1 8B 46 20 33 DB "), size = 5, to = nil},
     UpdateGame = { address = core.AOBScan("39 ? ? ? ? ? 74 15 FF D7"), size = 6, to = nil},
   }
 end
