@@ -94,6 +94,9 @@
     <ClInclude Include="UI\Controls\Control.h">
       <Filter>UI\Controls</Filter>
     </ClInclude>
+    <ClInclude Include="AutoMarket\Manager.h">
+      <Filter>AutoMarket</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AutoMarket\AutoMarket.cpp">
@@ -139,6 +142,9 @@
     </ClCompile>
     <ClCompile Include="UI\Controls\Control.cpp">
       <Filter>UI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="AutoMarket\Manager.cpp">
+      <Filter>AutoMarket</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
